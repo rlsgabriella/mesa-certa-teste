@@ -1,0 +1,30 @@
+{
+  "_backup_nota": "Estado da instancia n8n (ID bZu7Ku16BbgSj504) imediatamente ANTES da correcao pontual de 29/10/2026: ainda contem pinData de teste em 'Preparar Dados do Lead' e o campo '=nome' no POST. Capturado via n8n_get_workflow mode=full.",
+  "name": "Mesa Certa | 01 - Recebimento e Cadastro de Leads",
+  "id": "bZu7Ku16BbgSj504",
+  "active": false,
+  "pinData": {
+    "Preparar Dados do Lead": [
+      {
+        "json": {
+          "event_id": "teste-suporte-real-005",
+          "criado_em": "2026-10-29T03:00:00-03:00",
+          "nome": "Teste Suporte",
+          "email": "teste-suporte-005@example.com",
+          "telefone": "11999999999",
+          "restaurante": "Restaurante Teste",
+          "mensagem": "Estou com problema para acessar o sistema",
+          "origem": "marketing"
+        }
+      }
+    ]
+  },
+  "no_Criar_Negocio_no_CRM_bodyParameters_antes": [
+    { "name": "=nome", "value": "={{ $('Preparar Dados do Lead').item.json.nome }}" },
+    { "name": "email", "value": "={{ $('Preparar Dados do Lead').item.json.email }}" },
+    { "name": "telefone", "value": "={{ $('Preparar Dados do Lead').item.json.telefone }}" },
+    { "name": "restaurante", "value": "={{ $('Preparar Dados do Lead').item.json.restaurante }}" },
+    { "name": "origem", "value": "={{ $('Preparar Dados do Lead').item.json.origem }}" }
+  ],
+  "_observacao": "Backup completo e estruturado do grafo tambem disponivel em 'Mesa Certa _ 01 - Recebimento e Cadastro de Leads.bkp-2026-10-29.json' nesta mesma pasta. Este arquivo documenta especificamente os dois pontos que serao alterados."
+}

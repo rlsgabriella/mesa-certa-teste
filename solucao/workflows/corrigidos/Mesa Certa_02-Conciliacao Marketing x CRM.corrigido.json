@@ -1,0 +1,472 @@
+{
+  "name": "Mesa Certa|02-Conciliação Marketing × CRM",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1776,
+        -224
+      ],
+      "id": "f047ec18-5b01-4f35-aa5f-e8fbdc2a9098",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:8001/deals",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $('Buscar Leads Pendentes').item.json.email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1152,
+        -368
+      ],
+      "id": "be50ff3e-4d0a-40c1-b251-549ff2114272",
+      "name": "CRM | Consultar negócio existente",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "rmoFJ2XC21kBrCVT",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c7ae0aec-47c3-45b3-b153-a3282462bd0f",
+              "leftValue": "={{ $json.data.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -944,
+        -368
+      ],
+      "id": "092f7438-8cb1-4577-af48-b6e9c1352b44",
+      "name": "Negócio existe?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE sync_eventos\nSET\n    estado_sync = 'ja_no_crm',\n    deal_id = $1,\n    ultimo_erro = NULL,\n    atualizado_em = datetime('now')\nWHERE event_id = $2\n  AND estado_sync = 'pendente';",
+        "options": {
+          "queryReplacement": "={{ $json.data[0].deal_id }},{{ $('Buscar Leads Pendentes').item.json.event_id }}"
+        }
+      },
+      "type": "n8n-nodes-sqlite3.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        -384
+      ],
+      "id": "3580ac44-7025-4682-821b-40f80a14002f",
+      "name": "Vincular Negócio Existente",
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8001/deals",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "nome",
+              "value": "={{ $('Buscar Leads Pendentes').item.json.nome }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $('Buscar Leads Pendentes').item.json.email }}"
+            },
+            {
+              "name": "telefone",
+              "value": "={{ $('Buscar Leads Pendentes').item.json.telefone }}"
+            },
+            {
+              "name": "restaurante",
+              "value": "={{ $('Buscar Leads Pendentes').item.json.restaurante }}"
+            },
+            {
+              "name": "origem",
+              "value": "={{ $('Buscar Leads Pendentes').item.json.origem }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -800,
+        -160
+      ],
+      "id": "1c2d5c4a-d882-48ef-ad19-8bcf25bc1b0d",
+      "name": "Criar negócio ausente.",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "rmoFJ2XC21kBrCVT",
+          "name": "Header Auth account 2"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:8001/deals",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $('Buscar Leads Pendentes').item.json.email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -576,
+        0
+      ],
+      "id": "2ceb1b6b-f636-41db-a591-1273ab355c73",
+      "name": "Verificar criação após erro",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "rmoFJ2XC21kBrCVT",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  s.event_id,\n  s.estado_sync,\n  s.deal_id,\n  s.tentativas,\n  p.nome,\n  p.email,\n  p.telefone,\n  p.restaurante,\n  p.origem\nFROM sync_eventos AS s\nLEFT JOIN pedidos_formulario AS p\n  ON s.event_id = p.event_id\nWHERE s.estado_sync = 'pendente'\n  AND p.classificacao = 'comercial'\nORDER BY s.recebido_em ASC;",
+        "options": {}
+      },
+      "type": "CUSTOM.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        -1568,
+        -224
+      ],
+      "id": "f49cf008-8794-445d-b947-4426d6196da6",
+      "name": "Buscar Leads Pendentes",
+      "alwaysOutputData": true,
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cafbda87-04b9-4691-bc16-781666e47053",
+              "leftValue": "={{ $json.event_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1376,
+        -224
+      ],
+      "id": "9fbab18e-0e9b-4942-8827-324ca2a7e6e3",
+      "name": "Lead pendente encontrado?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE sync_eventos\nSET\n    estado_sync = 'sincronizado',\n    deal_id = $1,\n    ultimo_erro = NULL,\n    atualizado_em = datetime('now')\nWHERE event_id = $2\n  AND estado_sync = 'pendente';",
+        "options": {
+          "queryReplacement": "={{ $json.deal_id }},{{ $('Buscar Leads Pendentes').item.json.event_id }}"
+        }
+      },
+      "type": "n8n-nodes-sqlite3.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        -560,
+        -176
+      ],
+      "id": "4c569ec1-7115-43df-a932-d92733e333b9",
+      "name": "Atualizar SQLite.",
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7de6f13e-fa06-4cdf-a52d-943aee5155db",
+              "leftValue": "={{ $json.data?.length ?? 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -384,
+        0
+      ],
+      "id": "8972f5ba-7d0f-4add-bbf2-9a904aa8e4ec",
+      "name": "Negócio criado após erro?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE sync_eventos\nSET\n    estado_sync = 'sincronizado',\n    deal_id = $1,\n    ultimo_erro = NULL,\n    atualizado_em = datetime('now')\nWHERE event_id = $2\n  AND estado_sync = 'pendente';",
+        "options": {
+          "queryReplacement": "={{ $json.data[0].deal_id }},{{ $('Buscar Leads Pendentes').item.json.event_id }}"
+        }
+      },
+      "type": "n8n-nodes-sqlite3.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        -176,
+        -96
+      ],
+      "id": "a1b2c3d4-0001-4a00-9000-aa0000000001",
+      "name": "Confirmar Sincronização após Erro",
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE sync_eventos\nSET\n    estado_sync = 'falha',\n    tentativas = tentativas + 1,\n    ultimo_erro = 'POST falhou e GET posterior nao encontrou o negocio',\n    atualizado_em = datetime('now')\nWHERE event_id = $1\n  AND estado_sync = 'pendente';",
+        "options": {
+          "queryReplacement": "={{ $('Buscar Leads Pendentes').item.json.event_id }}"
+        }
+      },
+      "type": "n8n-nodes-sqlite3.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        -176,
+        112
+      ],
+      "id": "a1b2c3d4-0002-4a00-9000-aa0000000002",
+      "name": "Marcar Falha de Sincronização",
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Buscar Leads Pendentes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CRM | Consultar negócio existente": {
+      "main": [
+        [
+          {
+            "node": "Negócio existe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Negócio existe?": {
+      "main": [
+        [
+          {
+            "node": "Vincular Negócio Existente",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Criar negócio ausente.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar negócio ausente.": {
+      "main": [
+        [
+          {
+            "node": "Atualizar SQLite.",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Verificar criação após erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Leads Pendentes": {
+      "main": [
+        [
+          {
+            "node": "Lead pendente encontrado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead pendente encontrado?": {
+      "main": [
+        [
+          {
+            "node": "CRM | Consultar negócio existente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar criação após erro": {
+      "main": [
+        [
+          {
+            "node": "Negócio criado após erro?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Negócio criado após erro?": {
+      "main": [
+        [
+          {
+            "node": "Confirmar Sincronização após Erro",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Marcar Falha de Sincronização",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "0aeb3c75-dcc7-46fc-860b-8642e1682aae",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "78a0490306270e13cd9e2907d3ad57311cb3c0b89d42ffda74fc20e839728e03"
+  },
+  "id": "tTDsv01lkDZqTnp1",
+  "tags": []
+}

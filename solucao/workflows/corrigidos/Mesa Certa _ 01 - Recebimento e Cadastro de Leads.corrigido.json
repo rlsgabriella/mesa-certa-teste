@@ -1,0 +1,739 @@
+{
+  "name": "Mesa Certa | 01 - Recebimento e Cadastro de Leads",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mesa-certa/marketing",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -960,
+        -96
+      ],
+      "id": "a5d54d18-7fd1-4fe2-b71b-7f6ff6201912",
+      "name": "Receber Webhook de Marketing",
+      "webhookId": "f0a9168b-8dd2-4342-910a-63e3ad51784a"
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\n\nconst segredo = $env.MESA_CERTA_HMAC_SECRET;\nif (!segredo) throw new Error('MESA_CERTA_HMAC_SECRET não configurado');\nconsole.log(\n  'Fingerprint do segredo:',\n  crypto.createHash('sha256').update(segredo, 'utf8').digest('hex')\n);\n\n// corpo bruto, lido do binário (Raw Body) via helper oficial — resolve o buffer certo\nconst rawBody = await this.helpers.getBinaryDataBuffer(0, 'data');\n\nconst assinaturaRecebida = $json.headers['x-signature'] ?? '';\n\nconst assinaturaCalculada = 'sha256=' + crypto\n  .createHmac('sha256', segredo)\n  .update(rawBody)\n  .digest('hex');\n\nconst formatoValido = assinaturaRecebida.startsWith('sha256=');\n\nconst assinaturaValida = formatoValido\n  && assinaturaRecebida.length === assinaturaCalculada.length\n  && crypto.timingSafeEqual(\n    Buffer.from(assinaturaRecebida),\n    Buffer.from(assinaturaCalculada)\n  );\n\nreturn {\n  json: {\n    event_id: $json.body?.event_id,\n    assinatura_valida: assinaturaValida,\n    status: assinaturaValida ? 'ASSINATURA VALIDADA' : 'ASSINATURA INVALIDA',\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -752,
+        -96
+      ],
+      "id": "850c2d62-31f8-489f-977b-37baee0f9747",
+      "name": "Validar Assinatura HMAC"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7c0ddeda-1134-4629-8d47-05e765faf320",
+              "leftValue": "={{ $json.assinatura_valida }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -560,
+        -96
+      ],
+      "id": "ca6c0c0d-af8e-403f-9a6a-26505d32d8c3",
+      "name": "Assinatura Válida?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1218ddc4-5288-4068-9632-4c6d61b5b0ed",
+              "name": "nome",
+              "value": "={{ $('Receber Webhook de Marketing').item.json.body.nome }}",
+              "type": "string"
+            },
+            {
+              "id": "b2ba6327-6ed7-43fa-bbfd-35bff460dd1d",
+              "name": "email",
+              "value": "={{ $('Receber Webhook de Marketing').item.json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "88a4100d-c1e1-49b5-b120-77c9d7686c27",
+              "name": "telefone",
+              "value": "={{ $('Receber Webhook de Marketing').item.json.body.telefone }}",
+              "type": "string"
+            },
+            {
+              "id": "f33fdf09-092f-42b6-8b2c-a208f8099f82",
+              "name": "restaurante",
+              "value": "={{ $('Receber Webhook de Marketing').item.json.body.restaurante }}",
+              "type": "string"
+            },
+            {
+              "id": "bfc4c2a5-80d2-4447-9131-1708988cb6c9",
+              "name": "mensagem",
+              "value": "={{ $('Receber Webhook de Marketing').item.json.body.mensagem }}",
+              "type": "string"
+            },
+            {
+              "id": "97082356-48bc-445b-9583-71cd18f5300d",
+              "name": "origem",
+              "value": "={{ $('Receber Webhook de Marketing').item.json.body.origem }}",
+              "type": "string"
+            },
+            {
+              "id": "c5c95f1d-fb4d-44a7-b8d6-52894a883447",
+              "name": "criado_em",
+              "value": "={{ $('Receber Webhook de Marketing').item.json.body.criado_em }}",
+              "type": "string"
+            },
+            {
+              "id": "2dacaef1-f10a-4ed5-91cd-a6dbf884ee1a",
+              "name": "status",
+              "value": "novo",
+              "type": "string"
+            },
+            {
+              "id": "c6ca837b-6d85-4bc7-a9f3-a0de4d184571",
+              "name": "event_id",
+              "value": "={{ $('Receber Webhook de Marketing').item.json.body.event_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -336,
+        -112
+      ],
+      "id": "db04f44f-2a76-496e-8565-49f3bbbaca17",
+      "name": "Preparar Dados do Lead"
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:8001/deals",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $('Preparar Dados do Lead').first().json.email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1184,
+        -384
+      ],
+      "id": "d18009a3-7048-48fd-bd8c-a52a2fa679af",
+      "name": "Consultar Lead no CRM",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "rmoFJ2XC21kBrCVT",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "90101db9-f24d-4211-9abb-b57222872bd0",
+              "leftValue": "={{ $json.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1392,
+        -384
+      ],
+      "id": "4d0aad06-445c-4eec-a71f-a1926e585fd3",
+      "name": "Lead Não Existe?"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8001/deals",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "nome",
+              "value": "={{ $('Preparar Dados do Lead').item.json.nome }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $('Preparar Dados do Lead').item.json.email }}"
+            },
+            {
+              "name": "telefone",
+              "value": "={{ $('Preparar Dados do Lead').item.json.telefone }}"
+            },
+            {
+              "name": "restaurante",
+              "value": "={{ $('Preparar Dados do Lead').item.json.restaurante }}"
+            },
+            {
+              "name": "origem",
+              "value": "={{ $('Preparar Dados do Lead').item.json.origem }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1632,
+        -400
+      ],
+      "id": "1b87c247-f5b6-4ae4-8239-4c39f7c0e5a3",
+      "name": "Criar Negócio no CRM",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "rmoFJ2XC21kBrCVT",
+          "name": "Header Auth account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) AS total_encontrado\nFROM pedidos_formulario\nWHERE event_id = $1;",
+        "options": {
+          "queryReplacement": "={{ $('Preparar Dados do Lead').first().json.event_id }}"
+        }
+      },
+      "type": "CUSTOM.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        32,
+        -112
+      ],
+      "id": "f82d0fb2-316d-4c5c-9c93-61b415655bf7",
+      "name": "Verificar evento no SQLite",
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5790342e-dc4b-4b65-b8f0-d92a7864daea",
+              "leftValue": "={{ $json.total_encontrado }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        -112
+      ],
+      "id": "a9a06850-7d43-48ab-9aec-d77f14877107",
+      "name": "Evento Ainda Não Registrado?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO pedidos_formulario (\n  event_id,\n  criado_em,\n  nome,\n  email,\n  telefone,\n  restaurante,\n  mensagem,\n  origem,\n  recebido_em,\n  classificacao\n)\nSELECT $1, $2, $3, $4, $5, $6, $7, $8, $9, $10\nWHERE NOT EXISTS (\n  SELECT 1\n  FROM pedidos_formulario\n  WHERE event_id = $1\n);",
+        "options": {
+          "queryReplacement": "={{ [\n  $('Preparar Dados do Lead').first().json.event_id,\n  $('Preparar Dados do Lead').first().json.criado_em,\n  $('Preparar Dados do Lead').first().json.nome,\n  $('Preparar Dados do Lead').first().json.email,\n  $('Preparar Dados do Lead').first().json.telefone,\n  $('Preparar Dados do Lead').first().json.restaurante,\n  $('Preparar Dados do Lead').first().json.mensagem,\n  $('Preparar Dados do Lead').first().json.origem,\n  $now.toUTC().toISO(),\n  $('Classificar Pedido').first().json.classificacao\n] }}"
+        }
+      },
+      "type": "CUSTOM.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        416,
+        -256
+      ],
+      "id": "6d0a7ab8-7e37-42c4-9fe3-8e017722a389",
+      "name": "Registrar Pedido no SQLite",
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10ec0abd-3b57-4961-840c-c3dcb1115bd9",
+              "name": "status",
+              "value": "duplicado",
+              "type": "string"
+            },
+            {
+              "id": "7ab1af64-36d8-4430-ae8d-175133ade3c6",
+              "name": "event_id",
+              "value": "={{ $('Preparar Dados do Lead').item.json.event_id }}",
+              "type": "string"
+            },
+            {
+              "id": "3c129b13-549f-46d3-bfb8-2a50122bc440",
+              "name": "motivo",
+              "value": "Evento já registrado no SQLite. Nenhuma nova inserção necessária.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        64
+      ],
+      "id": "718ed241-bc55-427c-914d-2915ce91fa82",
+      "name": "Identificar Evento Duplicado"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO sync_eventos (\n    event_id,\n    estado_sync,\n    recebido_em,\n    atualizado_em\n)\nVALUES ($1, 'pendente', $2, $2)\nON CONFLICT(event_id) DO NOTHING;",
+        "options": {
+          "queryReplacement": "={{ [   $('Preparar Dados do Lead').first().json.event_id,   $now.toUTC().toISO() ] }}"
+        }
+      },
+      "type": "CUSTOM.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        608,
+        -256
+      ],
+      "id": "cbe776ae-8d26-4722-89cc-da79acb16ad4",
+      "name": "Persistir Evento e Controle",
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"recebido\",\n  \"mensagem\": \"Evento registrado para sincronizacao\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        784,
+        -256
+      ],
+      "id": "4aa9a6bb-4a47-48af-8045-27f20d50726e",
+      "name": "Responder Recebimento HTTP 200"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"erro\": \"Assinatura HMAC inválida\"\n}",
+        "options": {
+          "responseCode": 401
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -432,
+        96
+      ],
+      "id": "d2ac2866-479e-435a-9273-47e6df6e68c3",
+      "name": "Rejeitar Assinatura Inválida HTTP 401"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    event_id,\n    estado_sync,\n    deal_id,\n    tentativas,\n    ultimo_erro\nFROM sync_eventos\nWHERE event_id = $1;",
+        "options": {
+          "queryReplacement": "={{ $('Preparar Dados do Lead').first().json.event_id }}"
+        }
+      },
+      "type": "CUSTOM.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        672,
+        64
+      ],
+      "id": "b3fc96da-7b04-47cb-b9e6-d93006eb93ac",
+      "name": "Consultar Estado da Sincronização",
+      "alwaysOutputData": true,
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d1e88b07-9188-4da1-9362-0695f40417ab",
+              "leftValue": "={{ $json.estado_sync }}",
+              "rightValue": "pendente",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "5267d15d-29c7-4a72-b072-8baefd746169",
+              "leftValue": "={{ $json.estado_sync }}",
+              "rightValue": "falha",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        880,
+        64
+      ],
+      "id": "b95de9e3-9fd1-4779-ab29-ccd9e935b469",
+      "name": "Sincronização Pendente?"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst lead = $input.item.json;\n\nconst mensagem = (lead.mensagem || '')\n  .toLowerCase()\n  .normalize('NFD')\n  .replace(/[\\u0300-\\u036f]/g, '');\n\nlet classificacao = 'revisao';\n\nif (/\\b(teste|testing|spam)\\b/.test(mensagem)) {\n  classificacao = 'nao_comercial';\n} else if (\n  /\\b(suporte|erro|problema|senha|bug|nao consigo acessar)\\b/.test(mensagem)\n) {\n  classificacao = 'suporte';\n} else if (\n  /\\b(fornecedor|embalagem|parceria comercial|oferecer meus servicos)\\b/.test(mensagem)\n) {\n  classificacao = 'nao_comercial';\n} else if (\n  /\\b(demonstracao|demo|conhecer o sistema|quero contratar|planos|precos)\\b/.test(mensagem)\n) {\n  classificacao = 'comercial';\n}\n\nreturn {\n  json: {\n    ...lead,\n    classificacao\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -144,
+        -112
+      ],
+      "id": "5cca4746-11dc-45df-bc7d-4e4fe8a5714e",
+      "name": "Classificar Pedido"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "de515b07-2da6-468e-accf-de18272b42f6",
+              "leftValue": "={{ $('Classificar Pedido').first().json.classificacao }}",
+              "rightValue": "comercial",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        992,
+        -256
+      ],
+      "id": "d37442e9-e95f-4e79-a300-8e8deb305ab9",
+      "name": "Pedido é comercial?"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Receber Webhook de Marketing": {
+      "main": [
+        [
+          {
+            "node": "Validar Assinatura HMAC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Assinatura HMAC": {
+      "main": [
+        [
+          {
+            "node": "Assinatura Válida?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assinatura Válida?": {
+      "main": [
+        [
+          {
+            "node": "Preparar Dados do Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Rejeitar Assinatura Inválida HTTP 401",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Dados do Lead": {
+      "main": [
+        [
+          {
+            "node": "Classificar Pedido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Lead no CRM": {
+      "main": [
+        [
+          {
+            "node": "Lead Não Existe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Não Existe?": {
+      "main": [
+        [
+          {
+            "node": "Criar Negócio no CRM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Verificar evento no SQLite": {
+      "main": [
+        [
+          {
+            "node": "Evento Ainda Não Registrado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evento Ainda Não Registrado?": {
+      "main": [
+        [
+          {
+            "node": "Registrar Pedido no SQLite",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Identificar Evento Duplicado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar Pedido no SQLite": {
+      "main": [
+        [
+          {
+            "node": "Persistir Evento e Controle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Persistir Evento e Controle": {
+      "main": [
+        [
+          {
+            "node": "Responder Recebimento HTTP 200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responder Recebimento HTTP 200": {
+      "main": [
+        [
+          {
+            "node": "Pedido é comercial?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Identificar Evento Duplicado": {
+      "main": [
+        [
+          {
+            "node": "Consultar Estado da Sincronização",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Estado da Sincronização": {
+      "main": [
+        [
+          {
+            "node": "Sincronização Pendente?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classificar Pedido": {
+      "main": [
+        [
+          {
+            "node": "Verificar evento no SQLite",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pedido é comercial?": {
+      "main": [
+        [
+          {
+            "node": "Consultar Lead no CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "edac26c0-3623-4a71-abb0-98c939d341bb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "78a0490306270e13cd9e2907d3ad57311cb3c0b89d42ffda74fc20e839728e03"
+  },
+  "id": "bZu7Ku16BbgSj504",
+  "tags": []
+}

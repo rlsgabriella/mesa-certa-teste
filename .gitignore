@@ -1,0 +1,42 @@
+# ==========================================
+# MESA CERTA - CONFIGURACAO DO GITIGNORE
+# ==========================================
+
+# Credenciais e variaveis de ambiente
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.json
+credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# Node.js e n8n
+node_modules/
+.n8n/
+
+# Arquivos temporarios
+*.log
+*.tmp
+.cache/
+
+# Estado de execucao do CRM mock (muda a cada teste; a prova fica em solucao/evidencias/)
+solucao/crm-mock-teste/crm-mock-estado.json
+
+# Log do remetente do webhook (ja coberto por *.log, explicito por clareza)
+webhook/envios.log
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Configuracoes locais do editor
+.vscode/settings.json
