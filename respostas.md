@@ -101,7 +101,8 @@ Os 3 pedidos com assinatura inválida não geraram negócio.
 
 - **Pronto:** o cálculo e o texto do resumo (exemplo de 12/10 em [`resumo-semanal-2026-10-12.txt`](solucao/evidencias/04-workflow-03/resumo-semanal-2026-10-12.txt)), com 25 testes automáticos aprovados. Um e-mail de teste, enviado manualmente em 29/10 às 14:53, chegou ao Gmail.
 - **Executado no n8n:** o fluxo roda de ponta a ponta quando acionado à mão (execuções 357 e 359, e-mail aceito pelo SMTP).
-- **Não comprovado:** o envio automático toda segunda às 8h. O workflow está inativo, ninguém observou uma execução agendada, e a cópia importada não tem o fuso de Brasília definido.
+- **Agendamento observado:** em 29/10 às 16:50 o n8n disparou o resumo sozinho (execução 361, modo agendado) e o e-mail chegou. Foi um teste com horário diário.
+- **Não comprovado:** a segunda às 8h em si. Falta voltar o horário do teste para segunda 08:00 e ativar o workflow, que hoje está inativo.
 - **Atenção:** o e-mail de teste de 29/10 saiu com a cópia do CRM desatualizada (último registro em 11/10), então mostrava zero negócios na semana e trazia um aviso. Para um relatório operacional atual, essa cópia precisa ser atualizada a partir do CRM antes de cada envio.
 - **Não feito:** poder perguntar e receber resposta.
 

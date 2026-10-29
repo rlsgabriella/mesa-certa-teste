@@ -1,0 +1,440 @@
+{
+  "name": "Mesa Certa|03-Resumo Semanal da Gestora",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Workflow 03: resumo semanal (PREPARADO, NÃO IMPORTADO)\n\n**Antes de ativar:**\n1. Subir o serviço de indicadores (somente leitura) no PC do n8n:\n   `py solucao\\scripts\\resumo_semanal.py --servir --porta 8002`\n2. Manter o `negocios_crm` do banco atualizado a partir do CRM (o resumo avisa quando o banco está velho).\n3. Para enviar: criar a credencial **SMTP** no n8n, escolhê-la no nó 'Enviar e-mail' e definir no processo do n8n as variáveis `RESUMO_SEMANAL_DESTINATARIO` e `RESUMO_SEMANAL_REMETENTE`. Sem `RESUMO_SEMANAL_DESTINATARIO` o fluxo só registra o resumo, não envia.\n4. Alternativa ao e-mail: trocar o nó de e-mail por Slack (credencial do Slack).\n\nNenhuma credencial ou destinatário real está neste arquivo.",
+        "height": 380,
+        "width": 560,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        -32
+      ],
+      "id": "7c6eb30a-816a-4726-93ca-399f841c0ce0",
+      "name": "Nota: pré-requisitos"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 8 * * 1"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        480
+      ],
+      "id": "ff3bdcaf-f38e-4eba-b55c-023af54de13a",
+      "name": "Toda segunda às 08:00 (Brasília)"
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:8002/resumo",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "ref",
+              "value": "={{ $now.setZone('America/Sao_Paulo').toFormat(\"yyyy-MM-dd'T'HH:mm\") }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        256,
+        480
+      ],
+      "id": "d8305161-52f4-438a-bf70-fc9c8edfb2c0",
+      "name": "Calcular indicadores (serviço local)",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6f0c1d2e-0001-4a00-8000-000000000001",
+              "leftValue": "={{ $json.resumo_texto }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        512,
+        368
+      ],
+      "id": "a6a636c7-926a-4037-9194-5b1a26ea8e7c",
+      "name": "Resposta tem resumo?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6f0c1d2e-0002-4a00-8000-000000000001",
+              "name": "assunto",
+              "value": "={{ 'Resumo semanal Mesa Certa: semana de ' + DateTime.fromFormat($json.referencia.periodo_inicio, 'yyyy-MM-dd HH:mm:ss').toFormat('dd/MM') + ' a ' + DateTime.fromFormat($json.referencia.periodo_fim_exclusivo, 'yyyy-MM-dd HH:mm:ss').minus({ days: 1 }).toFormat('dd/MM') }}",
+              "type": "string"
+            },
+            {
+              "id": "6f0c1d2e-0002-4a00-8000-000000000002",
+              "name": "texto",
+              "value": "={{ $json.resumo_texto }}",
+              "type": "string"
+            },
+            {
+              "id": "6f0c1d2e-0002-4a00-8000-000000000003",
+              "name": "referencia",
+              "value": "={{ $json.referencia.data_hora_brasilia }}",
+              "type": "string"
+            },
+            {
+              "id": "6f0c1d2e-0002-4a00-8000-000000000004",
+              "name": "avisos_de_dados",
+              "value": "={{ $json.dados_incompletos.length }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        768,
+        368
+      ],
+      "id": "ede12e69-3343-4e1a-ae18-31b224aed990",
+      "name": "Compor mensagem"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6f0c1d2e-0003-4a00-8000-000000000001",
+              "leftValue": "={{ $env.RESUMO_SEMANAL_DESTINATARIO }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1024,
+        368
+      ],
+      "id": "cf1a4964-8c1e-4fe8-b031-61f30633acb1",
+      "name": "Envio configurado?"
+    },
+    {
+      "parameters": {
+        "fromEmail": "{{ $env.RESUMO_SEMANAL_REMETENTE }}",
+        "toEmail": "={{ $env.RESUMO_SEMANAL_DESTINATARIO }}",
+        "subject": "={{ $json.assunto }}",
+        "emailFormat": "text",
+        "text": "={{ $json.texto }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1280,
+        272
+      ],
+      "id": "5c833ee5-1ae4-41fd-944e-784b1e346aa6",
+      "name": "Enviar e-mail",
+      "webhookId": "62321618-2c99-48b5-a295-635748a7f8e0",
+      "credentials": {
+        "smtp": {
+          "id": "ZpEtw7w4lysre9HT",
+          "name": "SMTP account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6f0c1d2e-0004-4a00-8000-000000000001",
+              "name": "status",
+              "value": "enviado",
+              "type": "string"
+            },
+            {
+              "id": "6f0c1d2e-0004-4a00-8000-000000000002",
+              "name": "momento",
+              "value": "={{ $now.setZone('America/Sao_Paulo').toFormat('yyyy-MM-dd HH:mm:ss') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1536,
+        240
+      ],
+      "id": "54d7edf4-6831-44e3-b6c6-d4a568047fe9",
+      "name": "Registrar: resumo enviado"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6f0c1d2e-0005-4a00-8000-000000000001",
+              "name": "status",
+              "value": "nao_enviado_envio_nao_configurado",
+              "type": "string"
+            },
+            {
+              "id": "6f0c1d2e-0005-4a00-8000-000000000002",
+              "name": "momento",
+              "value": "={{ $now.setZone('America/Sao_Paulo').toFormat('yyyy-MM-dd HH:mm:ss') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1280,
+        496
+      ],
+      "id": "c4b165f6-e309-486d-aae0-8a72364b38fd",
+      "name": "Registrar: resumo gerado, envio não configurado"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6f0c1d2e-0006-4a00-8000-000000000001",
+              "name": "status",
+              "value": "falha",
+              "type": "string"
+            },
+            {
+              "id": "6f0c1d2e-0006-4a00-8000-000000000002",
+              "name": "momento",
+              "value": "={{ $now.setZone('America/Sao_Paulo').toFormat('yyyy-MM-dd HH:mm:ss') }}",
+              "type": "string"
+            },
+            {
+              "id": "6f0c1d2e-0006-4a00-8000-000000000003",
+              "name": "detalhe",
+              "value": "={{ (typeof $json.error === 'string' ? $json.error : $json.error?.message) || $json.erro || $json.message || 'a resposta do serviço não trouxe o resumo' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        784,
+        656
+      ],
+      "id": "ee450b2d-a519-4039-ba74-0d27e5ac32ac",
+      "name": "Registrar falha"
+    },
+    {
+      "parameters": {
+        "errorMessage": "={{ 'Resumo semanal falhou em ' + $json.momento + ' (Brasília): ' + $json.detalhe }}"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        640
+      ],
+      "id": "444baddd-b5f0-41a0-b891-972c5efebcaf",
+      "name": "Encerrar com erro (fica na lista de execuções)"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Toda segunda às 08:00 (Brasília)": {
+      "main": [
+        [
+          {
+            "node": "Calcular indicadores (serviço local)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular indicadores (serviço local)": {
+      "main": [
+        [
+          {
+            "node": "Resposta tem resumo?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar falha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resposta tem resumo?": {
+      "main": [
+        [
+          {
+            "node": "Compor mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar falha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compor mensagem": {
+      "main": [
+        [
+          {
+            "node": "Envio configurado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envio configurado?": {
+      "main": [
+        [
+          {
+            "node": "Enviar e-mail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar: resumo gerado, envio não configurado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar e-mail": {
+      "main": [
+        [
+          {
+            "node": "Registrar: resumo enviado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar falha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar falha": {
+      "main": [
+        [
+          {
+            "node": "Encerrar com erro (fica na lista de execuções)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "America/Sao_Paulo",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1
+  },
+  "versionId": "d1abb5e1-c700-4e31-84be-a327bf839d8a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "78a0490306270e13cd9e2907d3ad57311cb3c0b89d42ffda74fc20e839728e03"
+  },
+  "id": "wrGCERjaPYAeDcuH",
+  "tags": []
+}

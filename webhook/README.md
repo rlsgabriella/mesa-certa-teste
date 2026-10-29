@@ -42,5 +42,5 @@ Use `127.0.0.1` e não `localhost`: no Windows o `localhost` tenta IPv6 primeiro
 > Nota da entrega: o valor do segredo HMAC foi substituído por `<SEGREDO_HMAC_DO_DESAFIO>`
 > para não ficar em texto claro neste repositório. O valor real vem do material do desafio
 > e, nos testes, é configurado fora do repositório na variável `MESA_CERTA_HMAC_SECRET`
-> (ver `solucao/configuracoes/README.md`). Este é o único ponto em que este arquivo difere
+> (ver `como-assumir.md`). Este é o único ponto em que este arquivo difere
 > do original do desafio.

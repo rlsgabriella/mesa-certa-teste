@@ -8,7 +8,7 @@ Valores de segredos não aparecem aqui.
 
 - **Kiro** (assistente no editor): implementação de scripts e JSON, inspeção (workflows, banco e CRM por MCP somente leitura), testes, validações e documentação. Enviou os eventos de teste com `solucao/testar_webhook_hmac.py`, quando autorizado.
 - **ChatGPT**: apoio ao planejamento, ao entendimento técnico e à revisão de alternativas. 
-- **Ações manuais, sem IA:** edições no editor do n8n, reinícios do n8n com variáveis de ambiente, importação do WF02 v2, clique em "Execute workflow" do WF02, envio do e-mail de teste do WF03, publicação no GitHub e a retirada de três prints.
+- **Ações manuais, sem IA:** edições no editor do n8n, reinícios do n8n com variáveis de ambiente, importação do WF02 v2, clique em "Execute workflow" do WF02, ajuste de fuso e de cron do WF03, publicações e testes de agendamento, capturas de tela, tarja no e-mail, publicação no GitHub e a retirada de prints.
 - Legenda das sugestões: **[aceita]**, **[rejeitada]**, **[revisada após teste]**.
 
 ## 27/10: diagnóstico e primeira arquitetura
@@ -51,7 +51,7 @@ Valores de segredos não aparecem aqui.
 
 - **15:06** `solucao/evidencias/` reorganizada em cinco subpastas (`01-auditoria`, `02-workflow-01`, `03-workflow-02`, `04-workflow-03`, `05-testes-banco`) com índice e limitações de cada prova; referências de caminho atualizadas.
 - **Até 15:21** (horário deste registro) três prints do WF01 (`get.png`, `post.png`, `lead.png`) foram **retirados manualmente** por conterem informações que não serão publicadas. **Decisão: manter evidências textuais e estruturadas** (relatórios `.md` e `.json` das execuções 355 e 356, estado final do CRM, validação histórica do WF03). Os prints não eram obrigatórios; as imagens não foram recriadas e os links foram removidos.
-- Resta `email-evidencia.png`, com dado pessoal (ver riscos). **Depois:** a autora retirou esse print manualmente (horário não registrado); referências ainda a atualizar.
+- Restava `email-evidencia.png`, com dado pessoal. A autora o retirou manualmente (horário não registrado); o Kiro corrigiu as referências.
 - **Revisão do histórico git (Kiro, somente leitura):** um commit publicado (`2c3ef90`); o segredo HMAC de teste está nele em `log-de-decisoes.md` e `webhook/README.md`, e o token de teste do CRM em `crm-mock.py`; `.env` fora do histórico. Consulta anônima à página do repositório deu 404 e o Kiro leu isso como "privado"; **[revisada]** a autora informou que o repositório é **público**, então o segredo ficou exposto desde o push. **Sugestão do Kiro:** não reescrever o histórico. **[rejeitada]** pela autora, que pediu a limpeza.
 - **Reescrita local do commit (Kiro, a pedido da autora):** backup em bundle fora do pacote; commit raiz refeito (`2c3ef90` para `6227691`) com o segredo HMAC trocado por placeholder em `log-de-decisoes.md` e `webhook/README.md` e sem os três prints do WF01. Conferido: nenhum resultado para o segredo no histórico do `main`, `git fsck` sem erros, `.env` fora do commit. O token do CRM segue em `crm-mock.py`. **Publicado após autorização expressa da autora:** `git push --force-with-lease` (`2c3ef90` para `6227691`). Conferido no remoto depois do `fetch`: sem o segredo no histórico e na árvore, sem imagens. O commit antigo pode seguir acessível pelo hash no GitHub e em cópias de terceiros.
 
@@ -69,7 +69,14 @@ Valores de segredos não aparecem aqui.
 - **Execuções vistas no n8n (Kiro, leitura):** 357 (14:53:13, sucesso, "Enviar e-mail" aceito pelo SMTP; coincide com o e-mail de teste das 14:53), 358 (14:56, cancelada), 359 (16:19:37, sucesso, e-mail aceito) e 360 (16:19:52, só o gatilho). Todas em modo `manual`. Isso substitui a limitação anterior ("importação não documentada"); o destinatário não é registrado aqui.
 - **Teste de 16:20 (autora):** a autora ajustou o cron para `0 20 16 * * *` e publicou, mas **não houve execução agendada**. Às 16:27 o n8n mostrava o workflow com `active: false`, sem versão publicada, e o cron de volta em `0 8 * * 1`. O motivo da falha na publicação não aparece pela API; falta a mensagem exibida na tela.
 - **Causa provável do horário [descoberta do Kiro]:** o export do repositório tem `settings.timezone = America/Sao_Paulo`, mas o workflow importado não tem. A execução 360 mostra o gatilho em `America/New_York` (UTC-4). Um cron para 16:20 dispararia às 17:20 em Brasília, e a segunda às 08:00 sairia às 09:00 em Brasília. A correção é manual: Settings do workflow, Timezone `America/Sao_Paulo`.
-- **Próximo teste:** com o fuso corrigido, cron para poucos minutos à frente, publicar e acompanhar a lista de execuções; só uma execução de modo `trigger` comprova o agendamento. **[pendente]**
+- **Causa da falha de publicação (autora):** o cron tinha um ponto no fim (`0 50 16 * * *.`), o que gerou "Invalid cron expression". A autora corrigiu o fuso em Settings (`America/Sao_Paulo`), tirou o ponto e publicou.
+- **16:50 execução 361 [aprovada]:** modo `trigger`, 16:50:00 em `America/Sao_Paulo`, duração 3,7 s; "Enviar e-mail" aceito pelo SMTP e "Registrar: resumo enviado" com `status: enviado`. A autora confirmou o e-mail no Gmail às 16:50. Relato em `solucao/evidencias/04-workflow-03/wf03-execucao-361-agendada.md`, sem o print (traz o endereço de e-mail).
+- **17:02 capturas do teste (autora) [aceita com ressalva]:** a autora adicionou `execucao-automatica.png` (execução #361 às 16:50:00) e `email-chega.png` (e-mail das 16:50) em `solucao/evidencias/04-workflow-03/`, entendendo que não vazam informação. O Kiro conferiu: a captura do n8n não mostra dado pessoal; a do e-mail tem tarja sobre o nome do endereço, mas **a miniatura da foto de perfil e o `@gmail.com` seguem visíveis**. O Kiro recomendou cobrir a miniatura; a decisão é da autora. O arquivo sem tarja (`Captura de tela ... 165042.png`, em `Pictures\Screenshots`) **não** foi copiado e não deve entrar no repositório. A imagem do n8n mostra "Publish" (workflow inativo no momento).
+- **17:15 foto de perfil [decisão da autora]:** a autora informou que a miniatura da foto no `email-chega.png` não é problema; mantida.
+- **17:15 READMEs [aceita]:** o enunciado não pede README. Ficam 5: raiz, `solucao/evidencias`, `solucao/scripts`, `.kiro` e `webhook` (original do desafio). Os de `solucao/`, `solucao/configuracoes` e `solucao/workflows` foram movidos (não apagados) para `mesa-certa-teste-dev/readmes-removidos-2026-10-29/`, e o que valia deles (configuração, importação e regras de negócio) entrou resumido em `como-assumir.md`. Os que ficam foram enxugados e os links corrigidos.
+- **17:15 e-mail de autoria dos commits:** os dois commits usam o endereço interno da máquina (`…@digitalcollege.internal`). A autora vai configurar o e-mail real no Git manualmente. Reescrever a autoria dos commits já publicados exigirá novo push forçado, só com autorização.
+- **Limite da prova:** o teste usou cron diário (`0 50 16 * * *`), não a segunda 08:00. Depois dele o n8n mostrava o workflow inativo e o gatilho ainda com o cron de teste. **[pendente da autora]** voltar a `0 8 * * 1` e ativar, se quiser o envio real.
+- A nota amarela dentro do workflow no n8n ainda diz "PREPARADO, NÃO IMPORTADO" (texto do export); é cosmética.
 
 ## Status final (29/10/2026, 15:21)
 
@@ -82,13 +89,13 @@ Valores de segredos não aparecem aqui.
 **Limitações reais**
 - WF01 sem execução de: suporte ou não comercial, reenvio do mesmo `event_id`, assinatura inválida (401), falhas 429/500 e lote completo. As execuções 353 e 354 não tiveram causa comprovada.
 - WF02 sem execução do ramo de criação por POST, do tratamento de erro e de vários eventos.
-- WF03: **agendamento automático (segunda 08:00) não comprovado.** Está importado e foi executado à mão (357 e 359); a cópia importada não tem fuso definido (ver "Teste do agendamento").
+- WF03: o disparo agendado foi observado na execução 361 (cron diário de teste, 16:50). **A segunda 08:00 não foi observada**, e o workflow ficou inativo com o cron de teste.
 - **A cópia SQLite do CRM está desatualizada** (último registro em 11/10; o CRM mock já passou de 391 para 395 negócios). O resumo de 29/10 mostra 0 negócios na semana e só vale como teste de envio: **não deve ser lido como visão atual da operação**.
 - A classificação de pedidos (comercial, suporte, fornecedor, teste, lixo) é regra por texto, não validada por pessoas.
 
 
 **Pendências para a entrega**
-- Revisão de segurança do histórico do GitHub: histórico reescrito e publicado (ver README, seção 7). Falta a troca do segredo HMAC por quem o forneceu, já que o repositório é público e o valor ficou exposto; decisão da autora.
-- Comprovar o agendamento do WF03 e atualizar o `negocios_crm` antes de qualquer resumo real.
+- Revisão de segurança do histórico do GitHub: histórico reescrito e publicado (ver README, seção 5). Falta a troca do segredo HMAC por quem o forneceu, já que o repositório é público e o valor ficou exposto; decisão da autora.
+- Voltar o cron do WF03 a `0 8 * * 1`, ativar e atualizar o `negocios_crm` antes de qualquer resumo real.
 - Observar o primeiro disparo automático dos hooks e o uso da skill em uma conversa nova.
 - Cenários sem execução listados em "Limitações reais".

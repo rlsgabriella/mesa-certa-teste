@@ -74,7 +74,7 @@ Essa regra não confere assinatura e usa a classificação antiga.
 | Parte das reclamações de "ninguém retornou" vem de negócios fechados sem contato pela `automacao_limpeza`. | Cruzar com as reclamações dos clientes, que não estão nos dados. |
 | Os e-mails duplicados no CRM foram criados pela integração antiga. | O banco não guarda quem criou o negócio; `atualizado_por` só mostra a última alteração. |
 | O `sdr_2` é mais lento. | O SLA ainda não foi calculado. Ter mais negócios em Novo (43) **não** prova atraso. |
-| As contagens finais de teste, spam, suporte e fornecedor. | Dependem da regra de classificação nova (`../../workflows/README.md`, R5). |
+| As contagens finais de teste, spam, suporte e fornecedor. | Dependem da regra de classificação nova (`../../../como-assumir.md`, "Regras que o código implementa"). |
 
 ## 4. Situação do repositório antes da limpeza
 

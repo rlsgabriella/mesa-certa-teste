@@ -6,7 +6,7 @@ Um resumo por e-mail, em português simples, com cinco partes: como está o funi
 
 ## Quando
 
-A ideia é receber toda **segunda-feira às 8h**. Atenção: esse envio automático **ainda não foi comprovado**. Até hoje foi testado um envio feito à mão (29/10), que chegou ao Gmail. Enquanto isso não for confirmado, o resumo pode precisar ser pedido a quem cuida da automação.
+A ideia é receber toda **segunda-feira às 8h**. Atenção: o envio sozinho foi visto funcionando em um teste (29/10, às 16:50, e o e-mail chegou), mas **a segunda às 8h ainda não foi ativada nem observada**. Até lá, o resumo pode precisar ser pedido a quem cuida da automação.
 
 ## Como ler
 

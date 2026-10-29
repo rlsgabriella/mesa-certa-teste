@@ -14,7 +14,7 @@ Status em 29/10/2026. Os números vêm das [evidências](solucao/evidencias/READ
 | P4 | "Quem está atrasando? Quem está sem retorno hoje?" | Alta | 4.º | Calculado; sem base para apontar um SDR |
 | P5 | "Como está o time" (negócios por etapa) | Média | 4.º | Calculado e validado para 12/10 |
 | P6 | Fila com suporte, fornecedor e teste | Média | 4.º | Medido (27 negócios); limpeza não feita |
-| P7 | Resumo toda segunda, sem pedir a ninguém | Média | 5.º | Cálculo e texto prontos; agendamento não comprovado |
+| P7 | Resumo toda segunda, sem pedir a ninguém | Média | 5.º | Cálculo e texto prontos; disparo agendado observado em teste (exec. 361); falta ativar para segunda 08:00 |
 | P8 | Time não pode mudar o jeito de usar o CRM | Restrição | todas | Respeitada no desenho; não validada com o time |
 | P9 | "Perguntar depois e ele responder" | Baixa | não feito | Adiado |
 
