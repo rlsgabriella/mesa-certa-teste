@@ -75,7 +75,8 @@ Valores de segredos não aparecem aqui.
 - **17:15 foto de perfil [decisão da autora]:** a autora informou que a miniatura da foto no `email-chega.png` não é problema; mantida.
 - **17:15 READMEs [aceita]:** o enunciado não pede README. Ficam 5: raiz, `solucao/evidencias`, `solucao/scripts`, `.kiro` e `webhook` (original do desafio). Os de `solucao/`, `solucao/configuracoes` e `solucao/workflows` foram movidos (não apagados) para `mesa-certa-teste-dev/readmes-removidos-2026-10-29/`, e o que valia deles (configuração, importação e regras de negócio) entrou resumido em `como-assumir.md`. Os que ficam foram enxugados e os links corrigidos.
 - **17:15 e-mail de autoria dos commits:** os dois commits usam o endereço interno da máquina (`…@digitalcollege.internal`). A autora vai configurar o e-mail real no Git manualmente. Reescrever a autoria dos commits já publicados exigirá novo push forçado, só com autorização.
-- **Limite da prova:** o teste usou cron diário (`0 50 16 * * *`), não a segunda 08:00. Depois dele o n8n mostrava o workflow inativo e o gatilho ainda com o cron de teste. **[pendente da autora]** voltar a `0 8 * * 1` e ativar, se quiser o envio real.
+- **17:40 README da raiz [pedido da autora]:** reduzido a descrição do teste, o que foi feito, mapa do fluxo (Mermaid), mapa do repositório, resultados, limitações e segurança. O passo a passo da reescrita do histórico git saiu do README e fica só neste log.
+- **Escopo da prova [decisão da autora]:** o teste usou um horário diferente (`0 50 16 * * *`) de propósito, para mostrar que o agendamento funciona independente do horário. O Kiro registra que a execução da própria segunda 08:00 não foi vista, mas aceita o argumento: o gatilho e o fuso são os mesmos e só o horário muda. Depois do teste a autora devolveu o cron a segunda 08:00 (`0 0 8 * * 1`, conferido no n8n) e **deixou o workflow inativo**, sem necessidade de ativá-lo para a entrega.
 - A nota amarela dentro do workflow no n8n ainda diz "PREPARADO, NÃO IMPORTADO" (texto do export); é cosmética.
 
 ## Status final (29/10/2026, 15:21)
@@ -89,13 +90,13 @@ Valores de segredos não aparecem aqui.
 **Limitações reais**
 - WF01 sem execução de: suporte ou não comercial, reenvio do mesmo `event_id`, assinatura inválida (401), falhas 429/500 e lote completo. As execuções 353 e 354 não tiveram causa comprovada.
 - WF02 sem execução do ramo de criação por POST, do tratamento de erro e de vários eventos.
-- WF03: o disparo agendado foi observado na execução 361 (cron diário de teste, 16:50). **A segunda 08:00 não foi observada**, e o workflow ficou inativo com o cron de teste.
+- WF03: o disparo agendado foi provado na execução 361 (horário de teste, 16:50), com o mesmo gatilho e o mesmo fuso do horário definitivo. O workflow está configurado para segunda 08:00 e **inativo por decisão da autora**.
 - **A cópia SQLite do CRM está desatualizada** (último registro em 11/10; o CRM mock já passou de 391 para 395 negócios). O resumo de 29/10 mostra 0 negócios na semana e só vale como teste de envio: **não deve ser lido como visão atual da operação**.
 - A classificação de pedidos (comercial, suporte, fornecedor, teste, lixo) é regra por texto, não validada por pessoas.
 
 
 **Pendências para a entrega**
 - Revisão de segurança do histórico do GitHub: histórico reescrito e publicado (ver README, seção 5). Falta a troca do segredo HMAC por quem o forneceu, já que o repositório é público e o valor ficou exposto; decisão da autora.
-- Voltar o cron do WF03 a `0 8 * * 1`, ativar e atualizar o `negocios_crm` antes de qualquer resumo real.
+- Atualizar o `negocios_crm` e ativar o WF03 antes de qualquer resumo real (o cron já está em segunda 08:00).
 - Observar o primeiro disparo automático dos hooks e o uso da skill em uma conversa nova.
 - Cenários sem execução listados em "Limitações reais".

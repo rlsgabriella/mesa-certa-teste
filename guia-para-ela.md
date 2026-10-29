@@ -6,7 +6,7 @@ Um resumo por e-mail, em português simples, com cinco partes: como está o funi
 
 ## Quando
 
-A ideia é receber toda **segunda-feira às 8h**. Atenção: o envio sozinho foi visto funcionando em um teste (29/10, às 16:50, e o e-mail chegou), mas **a segunda às 8h ainda não foi ativada nem observada**. Até lá, o resumo pode precisar ser pedido a quem cuida da automação.
+A ideia é receber toda **segunda-feira às 8h**. O envio sozinho foi testado em 29/10 (às 16:50, e o e-mail chegou). O horário de segunda às 8h já está configurado, mas o envio só começa quando alguém **ativar** o fluxo no n8n. Até lá, o resumo precisa ser pedido a quem cuida da automação.
 
 ## Como ler
 

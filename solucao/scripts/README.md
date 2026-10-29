@@ -51,5 +51,5 @@ Estado e provas (execuções 357, 359 e 361): `solucao/evidencias/04-workflow-03
 
 1. **Atualizar `negocios_crm`.** A cópia vai até 11/10 e nada a atualiza; sem isso o resumo avisa "banco desatualizado".
 2. **Manter o serviço no ar** na porta 8002 e o n8n ligado na segunda às 08:00.
-3. **Voltar o cron** a `0 8 * * 1`, conferir o fuso `America/Sao_Paulo` em Settings e ativar.
+3. **Ativar o workflow** (cron em segunda 08:00 e fuso `America/Sao_Paulo` já configurados).
 4. **Definir** canal (e-mail ou Slack) e destinatário (`RESUMO_SEMANAL_DESTINATARIO`, `RESUMO_SEMANAL_REMETENTE`).

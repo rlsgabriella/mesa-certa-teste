@@ -13,7 +13,7 @@ SQLite --leitura--> resumo_semanal.py (--servir :8002) <--GET-- [WF03 n8n, segun
 
 - **WF01** (`solucao/workflows/wf01-…json`, id `bZu7Ku16BbgSj504`): webhook `/webhook/mesa-certa/marketing` (teste: `/webhook-test/…`), valida a assinatura sobre o corpo bruto, classifica, grava, responde 200 e cria o negócio só para pedido comercial.
 - **WF02** (`wf02-…json`, id `fcMKsKzpcdAMKnr0`): gatilho **manual**; busca eventos `pendente` e comerciais, consulta o CRM por e-mail e vincula ou cria o negócio.
-- **WF03** (`wf03-…json`, id `wrGCERjaPYAeDcuH`): Schedule `0 8 * * 1`, chama o serviço de indicadores e envia o e-mail se houver destinatário. O JSON traz o fuso `America/Sao_Paulo`; **confira em Settings do workflow**, porque a primeira cópia importada veio sem fuso e usou `America/New_York`. No n8n ele está **inativo** e com um cron de teste: volte para `0 8 * * 1` antes de ativar.
+- **WF03** (`wf03-…json`, id `wrGCERjaPYAeDcuH`): Schedule `0 8 * * 1`, chama o serviço de indicadores e envia o e-mail se houver destinatário. O JSON traz o fuso `America/Sao_Paulo`; **confira em Settings do workflow**, porque a primeira cópia importada veio sem fuso e usou `America/New_York`. No n8n ele está configurado para segunda 08:00 e **inativo**: ative-o para o envio semanal começar.
 - **Cálculo** (`solucao/scripts/resumo_semanal.py`): só lê o SQLite; gera JSON e texto; a data de referência é parâmetro.
 
 ## Configuração (sem segredos)
@@ -54,7 +54,7 @@ Pasta `.kiro/` ([`.kiro/README.md`](.kiro/README.md)): instruções fixas, skill
 ## Limitações
 
 - Um caminho comprovado por workflow: lead comercial (WF01) e vínculo de negócio existente (WF02). Sem execução: suporte, reenvio, assinatura inválida (401), falhas 429/500, criação por conciliação e lote completo.
-- WF03: o disparo agendado foi visto uma vez (execução 361, cron diário de teste). A segunda às 08:00 não foi observada. O WF02 não é agendado.
+- WF03: o agendamento foi provado na execução 361, com um horário de teste (mesmo gatilho e fuso). O workflow está inativo até alguém ativá-lo. O WF02 não é agendado.
 - O banco não registra quem fez o contato; o prazo por SDR não prova atraso individual.
 - O WF01 grava o hash do segredo no log do n8n (`console.log`); remova antes de uso fora do teste.
 - O repositório é público e o segredo HMAC de teste esteve no commit `2c3ef90`, que pode seguir acessível pelo hash: peça a troca do valor.

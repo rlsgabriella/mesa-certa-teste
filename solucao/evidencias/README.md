@@ -8,7 +8,7 @@ Uma subpasta por tema; caminhos relativos a esta pasta. Horários em Brasília, 
 |---|---|---|
 | **01** Recebimento | Lead **comercial** com HMAC válido: HTTP 200, classe `comercial`, gravado no SQLite e negócio 20395 no CRM (execução **355**, 29/10). | Suporte/não comercial, reenvio do mesmo `event_id`, assinatura inválida (401), falhas 429/500 e lote completo. A versão exportada (18 nós) não foi executada; a 355 rodou na de 22 nós. |
 | **02** Conciliação | Execução **356**: localizou o negócio 20395 pelo e-mail e marcou o evento 005 como `sincronizado`, sem duplicar o CRM. | Ramo de criação por POST, tratamento de erro do CRM e vários eventos. |
-| **03** Resumo semanal | Cálculo reproduz a apuração de 12/10/2026 08:00 (23 de 23) com 25 testes. Execução **361**, agendada, 29/10 às 16:50: e-mail aceito e recebido. | A **segunda 08:00** (o teste usou cron diário). Dados **desatualizados**: a cópia do CRM no SQLite termina em 11/10, então o resumo saiu com 0 negócios e avisa isso. |
+| **03** Resumo semanal | Cálculo reproduz a apuração de 12/10/2026 08:00 (23 de 23) com 25 testes. Execução **361**, agendada, 29/10 às 16:50: e-mail aceito e recebido. | O workflow está configurado para segunda 08:00 e inativo; o teste usou outro horário, com o mesmo gatilho e fuso. Dados **desatualizados**: a cópia do CRM no SQLite termina em 11/10, então o resumo saiu com 0 negócios e avisa isso. |
 
 ## Arquivos
 

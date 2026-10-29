@@ -20,6 +20,6 @@ Prova de que o Schedule Trigger do WF03 dispara sozinho. Dados lidos do n8n pelo
 ## O que isso prova e o que não prova
 
 - **Prova:** o Schedule Trigger, no fuso de Brasília, dispara sem clique e percorre o fluxo até o envio de e-mail aceito pelo SMTP.
-- **Não prova:** o cron **semanal** `0 8 * * 1` (segunda 08:00). O teste usou um cron diário em outro horário; o mecanismo é o mesmo, mas a segunda às 08:00 não foi observada.
+- **Escopo:** o teste usou um cron diário em outro horário, de propósito, para mostrar que o agendamento funciona independente do horário. O gatilho e o fuso são os mesmos do horário definitivo (segunda 08:00); a execução da própria segunda às 08:00 não foi esperada.
 - **Dados do resumo:** continuam desatualizados. O e-mail dizia que a cópia do CRM só tem registros até 11/10/2026 e mostrava 0 negócios na semana; serve como teste de envio, não como visão da operação.
-- **Estado depois do teste:** o n8n mostrava o workflow inativo e o gatilho ainda com `0 50 16 * * *`. Para uso real, voltar o cron a `0 8 * * 1` e ativar.
+- **Estado depois do teste:** a autora devolveu o cron a segunda 08:00 (`0 0 8 * * 1`, conferido no n8n) e deixou o workflow **inativo**, sem necessidade de ativá-lo para a entrega. Para o envio semanal começar, basta ativá-lo.
