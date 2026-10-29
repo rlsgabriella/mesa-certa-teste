@@ -18,6 +18,7 @@ Uma subpasta por tema; caminhos relativos a esta pasta. Horários em Brasília, 
 03-workflow-02/     wf02-execucao-356.md · wf02-execucao-356.json
 04-workflow-03/     validacao-resumo-semanal-2026-10-12.md · resumo-semanal-2026-10-12.json/.txt
                     wf03-execucao-361-agendada.md · execucao-automatica.png · email-chega.png
+                    Mesa Certa_03-Resumo Semanal da Gestora.json
 05-testes-banco/    registros-de-teste-banco.md
 ```
 
@@ -29,6 +30,7 @@ Uma subpasta por tema; caminhos relativos a esta pasta. Horários em Brasília, 
 | `03-workflow-02/wf02-execucao-356.*` | Execução 356 (`fcMKsKzpcdAMKnr0`, 13:17): `sync_eventos` de `pendente` para `sincronizado` com `deal_id` 20395; CRM continua com 395. | Só o ramo "negócio já existe". |
 | `04-workflow-03/validacao-…md`, `resumo-…json/.txt` | 23 de 23 indicadores conferem; original e cópia com o mesmo SHA-256. | Valida o **cálculo**, não o workflow. Classificação por texto, sem revisão humana. Mediana 2,08 h úteis contra 2,15 na apuração antiga. |
 | `04-workflow-03/wf03-execucao-361-agendada.md` | Relato da execução 361 lido no n8n: modo `trigger`, 16:50:00 em `America/Sao_Paulo`, "Enviar e-mail" aceito pelo SMTP. | Cron diário de teste; destinatário não registrado. |
+| `04-workflow-03/Mesa Certa_03-Resumo Semanal da Gestora.json` | Export do WF03 como está no n8n depois do teste: 11 nós, `timezone` `America/Sao_Paulo`, cron `0 0 8 * * 1`, workflow **inativo**. Só traz a referência à credencial SMTP, sem e-mail nem segredo. | Estado do export, não prova de execução. A cópia de referência é `solucao/workflows/wf03-resumo-semanal.json`. |
 | `04-workflow-03/execucao-automatica.png` | Tela de Executions: #361, 29/10 16:50:00, `Succeeded in 3.702s`, sem o ícone de teste manual das execuções 357 a 360. | A imagem não escreve o modo (está no relato). Mostra "Publish": workflow inativo na captura. |
 | `04-workflow-03/email-chega.png` | E-mail do resumo recebido às 16:50 ("posição em 29/10 às 16:50"). | Corpo cortado; resumo com 0 negócios e aviso de CRM desatualizado. Veja Segurança. |
 | `05-testes-banco/registros-de-teste-banco.md` | O que `mesa_certa.db` tem a mais que o original (tabela `sync_eventos`, ids 101 a 105, negócios 20392 a 20395) e como voltar ao início. | Original intacto (SHA-256 `F545271F…40D6`). |
