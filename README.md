@@ -1,9 +1,5 @@
 # Teste técnico Mesa Certa
 
-Enunciado: [`enunciado.md`](enunciado.md) (cópia do original). Estado em 29/10/2026.
-
-> **Status: a entrega ainda não está concluída.** A documentação obrigatória e o pacote do assistente Kiro (`.kiro/`) estão prontos, mas falta a revisão de
-> segurança do GitHub (o histórico contém o segredo e o token de teste do desafio). Ver a seção 6.
 
 ## 1. O que a solução faz
 
