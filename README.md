@@ -63,4 +63,4 @@ Os workflows ficam **sempre ativos** e trabalham em conjunto, acionados por gati
 
 ## Segurança
 
-Nenhum segredo está nos arquivos atuais (`.env` é ignorado pelo git). O token de teste do CRM é do próprio desafio, no `crm-mock.py`. O segredo HMAC de teste esteve em um commit antigo do repositório público: **trate-o como exposto e peça a troca**. Antes de publicar: `py .kiro/scripts/verificar_publicacao.py --git`.
+Nenhum segredo está nos arquivos atuais (`.env` é ignorado pelo git). O token de teste do CRM é do próprio desafio, no `crm-mock.py`. 
