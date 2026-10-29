@@ -28,6 +28,10 @@ flowchart LR
     W3 -->|"segunda 08:00"| M["E-mail da gestora"]
 ```
 
+## Funcionamento em operação
+
+Os workflows ficam **sempre ativos** e trabalham em conjunto, acionados por gatilhos: cada pedido do formulário dispara o WF01, que grava e cria o negócio; o WF02 concilia o que ficou pendente; toda segunda às 8h o WF03 calcula e envia o resumo, sem ninguém pedir. Nesta entrega o WF03 foi desativado no n8n depois do teste de agendamento, e o WF02 ainda é acionado à mão.
+
 ## Mapa do repositório
 
 | Onde | O que tem |
@@ -53,7 +57,7 @@ flowchart LR
 ## Limitações
 
 - Cada workflow tem **um caminho** comprovado. Não foram executados: suporte, reenvio do mesmo pedido, assinatura inválida, falhas do CRM e o lote completo.
-- O agendamento do WF03 foi provado com um horário de teste (mesmo gatilho e mesmo fuso). O horário definitivo, segunda às 08:00, está configurado no workflow, que foi deixado **inativo** de propósito: é preciso ativá-lo para o envio semanal começar.
+- O agendamento do WF03 foi provado com um horário de teste (mesmo gatilho e mesmo fuso). O horário definitivo, segunda às 08:00, está configurado no workflow, que foi deixado desativado depois do teste; em operação, fica ativo.
 - A cópia SQLite do CRM está desatualizada (último registro em 11/10); o resumo de teste saiu com 0 negócios e avisa isso.
 - A classificação de pedidos é uma regra por texto, sem revisão humana. O banco não diz quem fez cada contato, então o prazo por SDR não prova atraso individual.
 

@@ -6,7 +6,7 @@ Um resumo por e-mail, em português simples, com cinco partes: como está o funi
 
 ## Quando
 
-A ideia é receber toda **segunda-feira às 8h**. O envio sozinho foi testado em 29/10 (às 16:50, e o e-mail chegou). O horário de segunda às 8h já está configurado, mas o envio só começa quando alguém **ativar** o fluxo no n8n. Até lá, o resumo precisa ser pedido a quem cuida da automação.
+Você recebe o resumo toda **segunda-feira às 8h**, sozinho. A automação fica ligada o tempo todo: os pedidos do formulário são registrados assim que chegam, e o resumo sai no horário sem você pedir nem abrir nada. O envio sozinho já foi testado (29/10, às 16:50, e o e-mail chegou).
 
 ## Como ler
 
@@ -18,5 +18,5 @@ A ideia é receber toda **segunda-feira às 8h**. O envio sozinho foi testado em
 ## Se o resumo não chegar
 
 1. Veja a caixa de spam ou lixo eletrônico.
-2. Se não estiver lá até as 8h30, avise quem mantém a automação: o computador com o n8n pode estar desligado.
-3. Peça que o resumo seja gerado na hora; o passo a passo está em [`como-assumir.md`](como-assumir.md).
+2. Se não estiver lá até as 8h30, avise quem mantém a automação: o computador onde ela roda pode estar desligado.
+3. Peça que o resumo seja gerado na hora; quem mantém a automação sabe como.

@@ -14,7 +14,7 @@ Status em 29/10/2026. Os números vêm das [evidências](solucao/evidencias/READ
 | P4 | "Quem está atrasando? Quem está sem retorno hoje?" | Alta | 4.º | Calculado; sem base para apontar um SDR |
 | P5 | "Como está o time" (negócios por etapa) | Média | 4.º | Calculado e validado para 12/10 |
 | P6 | Fila com suporte, fornecedor e teste | Média | 4.º | Medido (27 negócios); limpeza não feita |
-| P7 | Resumo toda segunda, sem pedir a ninguém | Média | 5.º | Cálculo e texto prontos; disparo agendado observado em teste (exec. 361); horário de segunda 08:00 configurado; fluxo inativo até alguém ativar |
+| P7 | Resumo toda segunda, sem pedir a ninguém | Média | 5.º | Cálculo e texto prontos; disparo agendado observado em teste (exec. 361); horário de segunda 08:00 configurado; em operação o fluxo fica ativo (desativado nesta entrega após o teste) |
 | P8 | Time não pode mudar o jeito de usar o CRM | Restrição | todas | Respeitada no desenho; não validada com o time |
 | P9 | "Perguntar depois e ele responder" | Baixa | não feito | Adiado |
 
@@ -34,7 +34,7 @@ Status em 29/10/2026. Os números vêm das [evidências](solucao/evidencias/READ
 - **P4 Prazo de 4 horas úteis.** 46 dos 99 negócios de pedidos comerciais foram atendidos no prazo, 16 fora, 13 vencidos sem retorno e 24 ainda dentro do prazo. Em 12/10 há 68 negócios em Novo com prazo vencido. A diferença entre SDRs não é estatisticamente comprovada e o banco não diz quem ligou.
 - **P5 Funil.** 106 Novo, 133 Contato, 43 Reunião marcada, 37 Reunião realizada, 72 Perdido (391).
 - **P6 Fila poluída.** 28 pedidos não comerciais viraram 27 negócios: suporte 8, fornecedor 5, teste 10, spam 1 e lixo provável 3.
-- **P7 Resumo.** [Cálculo validado](solucao/evidencias/04-workflow-03/validacao-resumo-semanal-2026-10-12.md) (23 de 23) e 25 testes automatizados. Um e-mail de teste enviado manualmente em 29/10 chegou ao Gmail. O disparo agendado foi provado em teste (execução 361); o fluxo está configurado para segunda às 8h e inativo até alguém ativar.
+- **P7 Resumo.** [Cálculo validado](solucao/evidencias/04-workflow-03/validacao-resumo-semanal-2026-10-12.md) (23 de 23) e 25 testes automatizados. Um e-mail de teste enviado manualmente em 29/10 chegou ao Gmail. O disparo agendado foi provado em teste (execução 361); o fluxo está configurado para segunda às 8h e, em operação, fica ativo (nesta entrega foi desativado após o teste).
 - **P8 Não mudar o CRM.** O cadastro chega ao CRM pela API e o resumo vai por e-mail; nenhuma tela do CRM muda. Não houve teste com o time.
 
 ## O que foi adiado ou não resolvido, e por quê

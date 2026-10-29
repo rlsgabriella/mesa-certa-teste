@@ -1,3 +1,3 @@
 - **Chat (neste projeto, o ChatGPT):** uso para planejar, entender o problema e comparar alternativas; é quando não preciso que ele leia nem altere arquivos, banco, CRM ou n8n.
 - **Assistente que age no projeto (Kiro):** uso para ler e alterar arquivos, consultar banco, CRM e n8n, rodar testes e registrar evidências, sempre com o resultado verificável no repositório.
-- **Script agendado (`resumo_semanal.py` + Workflow 03):** uso para o que se repete sem decisão humana, como o resumo de segunda às 8h; o disparo agendado foi visto em teste (execução 361, 29/10 às 16:50) e só vale para uso real com o workflow ativo e a cópia do CRM atualizada.
+- **Script agendado (`resumo_semanal.py` + Workflow 03):** uso para o que se repete sem decisão humana, como o resumo de segunda às 8h; o disparo agendado foi visto em teste (execução 361, 29/10 às 16:50) e em operação fica ativo, com a cópia do CRM atualizada.

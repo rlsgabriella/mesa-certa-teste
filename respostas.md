@@ -102,7 +102,7 @@ Os 3 pedidos com assinatura inválida não geraram negócio.
 - **Pronto:** o cálculo e o texto do resumo (exemplo de 12/10 em [`resumo-semanal-2026-10-12.txt`](solucao/evidencias/04-workflow-03/resumo-semanal-2026-10-12.txt)), com 25 testes automáticos aprovados. Um e-mail de teste, enviado manualmente em 29/10 às 14:53, chegou ao Gmail.
 - **Executado no n8n:** o fluxo roda de ponta a ponta quando acionado à mão (execuções 357 e 359, e-mail aceito pelo SMTP).
 - **Agendamento comprovado:** em 29/10 às 16:50 o n8n disparou o resumo sozinho (execução 361, modo agendado) e o e-mail chegou. O teste usou outro horário de propósito, para mostrar que funciona independente dele.
-- **Falta para começar a valer:** o fluxo está configurado para segunda às 8h, mas está inativo; alguém precisa ativá-lo.
+- **Como funciona em operação:** os workflows ficam sempre ativos e trabalham em conjunto, a partir de gatilhos. Cada pedido do formulário dispara o recebimento, que grava e cria o negócio no CRM; a conciliação cobre o que ficou pendente; e toda segunda às 8h o resumo é calculado e enviado por e-mail, sem ninguém pedir. Nesta entrega o fluxo do resumo foi desativado no n8n depois do teste; em uso, fica ativo. A conciliação hoje é acionada à mão.
 - **Atenção:** o e-mail de teste de 29/10 saiu com a cópia do CRM desatualizada (último registro em 11/10), então mostrava zero negócios na semana e trazia um aviso. Para um relatório operacional atual, essa cópia precisa ser atualizada a partir do CRM antes de cada envio.
 - **Não feito:** poder perguntar e receber resposta.
 
