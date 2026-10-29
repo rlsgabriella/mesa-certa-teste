@@ -1,0 +1,70 @@
+{
+  "teste": "T1.005",
+  "resultado": "APROVADO",
+  "data": "2026-10-29",
+  "workflow": {
+    "id": "bZu7Ku16BbgSj504",
+    "nome": "Mesa Certa | 01 - Recebimento e Cadastro de Leads",
+    "versionId": "88e7d88f-28c2-4345-b60b-33b98d53b4c1"
+  },
+  "envio": {
+    "script": "solucao/testar_webhook_hmac.py",
+    "url": "http://127.0.0.1:5678/webhook-test/mesa-certa/marketing",
+    "event_id": "evt_t1_comercial_005",
+    "email": "t1.comercial.005@teste-mesacerta.example",
+    "bytes_corpo": 302,
+    "x_signature": "sha256=47181ba53d1e39f98792c5e62660431648499084969e617ff7c013a9e5324d9b",
+    "http": 200,
+    "resposta": {
+      "status": "recebido",
+      "mensagem": "Evento registrado para sincronizacao"
+    }
+  },
+  "execucao_n8n": {
+    "id": 355,
+    "status": "success",
+    "iniciada_utc": "2026-10-29T14:33:02.836Z",
+    "finalizada_utc": "2026-10-29T14:33:12.376Z",
+    "nos_executados": 12,
+    "assinatura_valida": true,
+    "classificacao": "comercial",
+    "verificar_evento_total_encontrado": 0,
+    "registrar_pedido": { "changes": 1, "lastInsertRowid": 105 },
+    "persistir_evento": { "changes": 1, "lastInsertRowid": 4 },
+    "consultar_lead_crm_total": 0,
+    "criar_negocio_crm": { "status": "ok", "deal_id": 20395 }
+  },
+  "sqlite": {
+    "pedidos_formulario": {
+      "id": 105,
+      "event_id": "evt_t1_comercial_005",
+      "classificacao": "comercial",
+      "recebido_em": "2026-10-29T14:33:03.601Z"
+    },
+    "sync_eventos": {
+      "event_id": "evt_t1_comercial_005",
+      "estado_sync": "pendente",
+      "deal_id": null,
+      "tentativas": 0,
+      "ultimo_erro": null
+    }
+  },
+  "crm": {
+    "total_antes": 394,
+    "total_depois": 395,
+    "novo_antes": 109,
+    "novo_depois": 110,
+    "negocio": {
+      "deal_id": 20395,
+      "nome": "T1 Comercial Cinco",
+      "email": "t1.comercial.005@teste-mesacerta.example",
+      "restaurante": "Restaurante Boa Mesa",
+      "origem": "site",
+      "etapa": "Novo",
+      "criado_em": "2026-10-29 11:33:12"
+    }
+  },
+  "pendencias": [
+    "Workflow 01 criou o negocio no CRM mas nao atualiza sync_eventos para sincronizado (continua pendente, deal_id NULL)."
+  ]
+}

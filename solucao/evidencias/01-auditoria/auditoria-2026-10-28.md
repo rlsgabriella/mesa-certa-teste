@@ -18,7 +18,7 @@ Python antiga estão no arquivo `arquivo-python-2026-10-28.zip`, fora do reposit
 | `mesa_certa.db` e `mesa_certa.original.db` × `candidato.zip` original | Idênticos (SHA-256 começa com `F545271F6CC9`). |
 | `crm-mock-teste/crm-mock.py` e `crm-seed.json` × `candidato.zip` | Idênticos. |
 | Conteúdo dos bancos | Só as 3 tabelas do desafio (`negocios_crm`, `historico_etapas`, `pedidos_formulario`). Nenhuma coluna de CPF, CNPJ, endereço, senha ou token. A empresa e os clientes são fictícios segundo o `enunciado.md`. |
-| Teste do João Almeida | Negócio `20392`, criado em 28/10/2026 00:33:11 no CRM mock (392 negócios no total). Cópia do estado em `crm-estado-teste-joao-almeida-20392.json`. |
+| Teste do João Almeida | Negócio `20392`, criado em 28/10/2026 00:33:11 no CRM mock (392 negócios no total). Cópia do estado em `../02-workflow-01/crm-estado-teste-joao-almeida-20392.json`. |
 
 ## 2. Números confirmados
 
@@ -74,7 +74,7 @@ Essa regra não confere assinatura e usa a classificação antiga.
 | Parte das reclamações de "ninguém retornou" vem de negócios fechados sem contato pela `automacao_limpeza`. | Cruzar com as reclamações dos clientes, que não estão nos dados. |
 | Os e-mails duplicados no CRM foram criados pela integração antiga. | O banco não guarda quem criou o negócio; `atualizado_por` só mostra a última alteração. |
 | O `sdr_2` é mais lento. | O SLA ainda não foi calculado. Ter mais negócios em Novo (43) **não** prova atraso. |
-| As contagens finais de teste, spam, suporte e fornecedor. | Dependem da regra de classificação nova (`../workflows/README.md`, R5). |
+| As contagens finais de teste, spam, suporte e fornecedor. | Dependem da regra de classificação nova (`../../workflows/README.md`, R5). |
 
 ## 4. Situação do repositório antes da limpeza
 

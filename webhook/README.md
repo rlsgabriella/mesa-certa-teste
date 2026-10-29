@@ -36,3 +36,11 @@ Opções: `--url` (outro endereço), `--limite 20` (só as primeiras entregas, p
 O remetente grava `envios.log` com cada tentativa. Para repetir o lote do zero, restaure o banco (veja o enunciado) e rode de novo.
 
 Use `127.0.0.1` e não `localhost`: no Windows o `localhost` tenta IPv6 primeiro e cada entrega demora cerca de 2 segundos.
+
+---
+
+> Nota da entrega: o valor do segredo HMAC foi substituído por `<SEGREDO_HMAC_DO_DESAFIO>`
+> para não ficar em texto claro neste repositório. O valor real vem do material do desafio
+> e, nos testes, é configurado fora do repositório na variável `MESA_CERTA_HMAC_SECRET`
+> (ver `solucao/configuracoes/README.md`). Este é o único ponto em que este arquivo difere
+> do original do desafio.

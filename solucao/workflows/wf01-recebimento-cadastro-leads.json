@@ -1,5 +1,8 @@
 {
   "name": "Mesa Certa | 01 - Recebimento e Cadastro de Leads",
+  "id": "bZu7Ku16BbgSj504",
+  "versionId": "3c85f463-bc10-4e30-aa0a-bf117397ca68",
+  "active": false,
   "nodes": [
     {
       "parameters": {
@@ -214,7 +217,7 @@
         "bodyParameters": {
           "parameters": [
             {
-              "name": "=nome",
+              "name": "nome",
               "value": "={{ $('Preparar Dados do Lead').item.json.nome }}"
             },
             {
@@ -254,29 +257,6 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT COUNT(*) AS total_encontrado\nFROM pedidos_formulario\nWHERE event_id = $1;",
-        "options": {
-          "queryReplacement": "={{ $('Preparar Dados do Lead').first().json.event_id }}"
-        }
-      },
-      "type": "CUSTOM.sqliteNode",
-      "typeVersion": 2,
-      "position": [
-        32,
-        -112
-      ],
-      "id": "f82d0fb2-316d-4c5c-9c93-61b415655bf7",
-      "name": "Verificar evento no SQLite",
-      "credentials": {
-        "sqliteCredentialsApi": {
-          "id": "A6Zo3HG9VmdtVFOr",
-          "name": "SQLite Database account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -307,29 +287,6 @@
       ],
       "id": "a9a06850-7d43-48ab-9aec-d77f14877107",
       "name": "Evento Ainda Não Registrado?"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO pedidos_formulario (\n  event_id,\n  criado_em,\n  nome,\n  email,\n  telefone,\n  restaurante,\n  mensagem,\n  origem,\n  recebido_em,\n  classificacao\n)\nSELECT $1, $2, $3, $4, $5, $6, $7, $8, $9, $10\nWHERE NOT EXISTS (\n  SELECT 1\n  FROM pedidos_formulario\n  WHERE event_id = $1\n);",
-        "options": {
-          "queryReplacement": "={{ [\n  $('Preparar Dados do Lead').first().json.event_id,\n  $('Preparar Dados do Lead').first().json.criado_em,\n  $('Preparar Dados do Lead').first().json.nome,\n  $('Preparar Dados do Lead').first().json.email,\n  $('Preparar Dados do Lead').first().json.telefone,\n  $('Preparar Dados do Lead').first().json.restaurante,\n  $('Preparar Dados do Lead').first().json.mensagem,\n  $('Preparar Dados do Lead').first().json.origem,\n  $now.toUTC().toISO(),\n  $('Classificar Pedido').first().json.classificacao\n] }}"
-        }
-      },
-      "type": "CUSTOM.sqliteNode",
-      "typeVersion": 2,
-      "position": [
-        416,
-        -256
-      ],
-      "id": "6d0a7ab8-7e37-42c4-9fe3-8e017722a389",
-      "name": "Registrar Pedido no SQLite",
-      "credentials": {
-        "sqliteCredentialsApi": {
-          "id": "A6Zo3HG9VmdtVFOr",
-          "name": "SQLite Database account"
-        }
-      }
     },
     {
       "parameters": {
@@ -368,29 +325,6 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO sync_eventos (\n    event_id,\n    estado_sync,\n    recebido_em,\n    atualizado_em\n)\nVALUES ($1, 'pendente', $2, $2)\nON CONFLICT(event_id) DO NOTHING;",
-        "options": {
-          "queryReplacement": "={{ [   $('Preparar Dados do Lead').first().json.event_id,   $now.toUTC().toISO() ] }}"
-        }
-      },
-      "type": "CUSTOM.sqliteNode",
-      "typeVersion": 2,
-      "position": [
-        608,
-        -256
-      ],
-      "id": "cbe776ae-8d26-4722-89cc-da79acb16ad4",
-      "name": "Persistir Evento e Controle",
-      "credentials": {
-        "sqliteCredentialsApi": {
-          "id": "A6Zo3HG9VmdtVFOr",
-          "name": "SQLite Database account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "respondWith": "json",
         "responseBody": "{\n  \"status\": \"recebido\",\n  \"mensagem\": \"Evento registrado para sincronizacao\"\n}",
         "options": {
@@ -422,30 +356,6 @@
       ],
       "id": "d2ac2866-479e-435a-9273-47e6df6e68c3",
       "name": "Rejeitar Assinatura Inválida HTTP 401"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT\n    event_id,\n    estado_sync,\n    deal_id,\n    tentativas,\n    ultimo_erro\nFROM sync_eventos\nWHERE event_id = $1;",
-        "options": {
-          "queryReplacement": "={{ $('Preparar Dados do Lead').first().json.event_id }}"
-        }
-      },
-      "type": "CUSTOM.sqliteNode",
-      "typeVersion": 2,
-      "position": [
-        672,
-        64
-      ],
-      "id": "b3fc96da-7b04-47cb-b9e6-d93006eb93ac",
-      "name": "Consultar Estado da Sincronização",
-      "alwaysOutputData": true,
-      "credentials": {
-        "sqliteCredentialsApi": {
-          "id": "A6Zo3HG9VmdtVFOr",
-          "name": "SQLite Database account"
-        }
-      }
     },
     {
       "parameters": {
@@ -538,24 +448,100 @@
       ],
       "id": "d37442e9-e95f-4e79-a300-8e8deb305ab9",
       "name": "Pedido é comercial?"
-    }
-  ],
-  "pinData": {
-    "Preparar Dados do Lead": [
-      {
-        "json": {
-          "event_id": "teste-suporte-real-005",
-          "criado_em": "2026-10-29T03:00:00-03:00",
-          "nome": "Teste Suporte",
-          "email": "teste-suporte-005@example.com",
-          "telefone": "11999999999",
-          "restaurante": "Restaurante Teste",
-          "mensagem": "Estou com problema para acessar o sistema",
-          "origem": "marketing"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) AS total_encontrado\nFROM pedidos_formulario\nWHERE event_id = $1;",
+        "options": {
+          "queryReplacement": "={{ $('Preparar Dados do Lead').first().json.event_id }}"
+        }
+      },
+      "type": "n8n-nodes-sqlite3.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        32,
+        -112
+      ],
+      "id": "c9da741f-25fb-4f2f-a14f-692545a7a6bf",
+      "name": "Verificar evento",
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
         }
       }
-    ]
-  },
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO pedidos_formulario (\n  event_id,\n  criado_em,\n  nome,\n  email,\n  telefone,\n  restaurante,\n  mensagem,\n  origem,\n  recebido_em,\n  classificacao\n)\nSELECT $1, $2, $3, $4, $5, $6, $7, $8, $9, $10\nWHERE NOT EXISTS (\n  SELECT 1\n  FROM pedidos_formulario\n  WHERE event_id = $1\n);",
+        "options": {
+          "queryReplacement": "={{ [   $('Preparar Dados do Lead').first().json.event_id,   $('Preparar Dados do Lead').first().json.criado_em,   $('Preparar Dados do Lead').first().json.nome,   $('Preparar Dados do Lead').first().json.email,   $('Preparar Dados do Lead').first().json.telefone,   $('Preparar Dados do Lead').first().json.restaurante,   $('Preparar Dados do Lead').first().json.mensagem,   $('Preparar Dados do Lead').first().json.origem,   $now.toUTC().toISO(),   $('Classificar Pedido').first().json.classificacao ] }}"
+        }
+      },
+      "type": "n8n-nodes-sqlite3.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        400,
+        -272
+      ],
+      "id": "c16373e9-81fa-4c0b-9530-fdba0a4a4685",
+      "name": "Registrar pedido",
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO sync_eventos (\n    event_id,\n    estado_sync,\n    recebido_em,\n    atualizado_em\n)\nVALUES ($1, 'pendente', $2, $2)\nON CONFLICT(event_id) DO NOTHING;",
+        "options": {
+          "queryReplacement": "={{ [   $('Preparar Dados do Lead').first().json.event_id,   $now.toUTC().toISO() ] }}"
+        }
+      },
+      "type": "n8n-nodes-sqlite3.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        592,
+        -272
+      ],
+      "id": "44df4054-c669-4dc6-8fce-1b9941129a60",
+      "name": "Persistir evento",
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    event_id,\n    estado_sync,\n    deal_id,\n    tentativas,\n    ultimo_erro\nFROM sync_eventos\nWHERE event_id = $1;",
+        "options": {
+          "queryReplacement": "={{ $('Preparar Dados do Lead').first().json.event_id}}"
+        }
+      },
+      "type": "n8n-nodes-sqlite3.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        688,
+        64
+      ],
+      "id": "87c32384-742d-4aa6-b24f-475b6df2a047",
+      "name": "Consultar estado e sincronização",
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
+    }
+  ],
   "connections": {
     "Receber Webhook de Marketing": {
       "main": [
@@ -631,22 +617,11 @@
         []
       ]
     },
-    "Verificar evento no SQLite": {
-      "main": [
-        [
-          {
-            "node": "Evento Ainda Não Registrado?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Evento Ainda Não Registrado?": {
       "main": [
         [
           {
-            "node": "Registrar Pedido no SQLite",
+            "node": "Registrar pedido",
             "type": "main",
             "index": 0
           }
@@ -654,28 +629,6 @@
         [
           {
             "node": "Identificar Evento Duplicado",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Registrar Pedido no SQLite": {
-      "main": [
-        [
-          {
-            "node": "Persistir Evento e Controle",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Persistir Evento e Controle": {
-      "main": [
-        [
-          {
-            "node": "Responder Recebimento HTTP 200",
             "type": "main",
             "index": 0
           }
@@ -697,18 +650,7 @@
       "main": [
         [
           {
-            "node": "Consultar Estado da Sincronização",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Consultar Estado da Sincronização": {
-      "main": [
-        [
-          {
-            "node": "Sincronização Pendente?",
+            "node": "Consultar estado e sincronização",
             "type": "main",
             "index": 0
           }
@@ -719,7 +661,7 @@
       "main": [
         [
           {
-            "node": "Verificar evento no SQLite",
+            "node": "Verificar evento",
             "type": "main",
             "index": 0
           }
@@ -736,19 +678,61 @@
           }
         ]
       ]
+    },
+    "Verificar evento": {
+      "main": [
+        [
+          {
+            "node": "Evento Ainda Não Registrado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar pedido": {
+      "main": [
+        [
+          {
+            "node": "Persistir evento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Persistir evento": {
+      "main": [
+        [
+          {
+            "node": "Responder Recebimento HTTP 200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar estado e sincronização": {
+      "main": [
+        [
+          {
+            "node": "Sincronização Pendente?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "edac26c0-3623-4a71-abb0-98c939d341bb",
+  "pinData": {},
+  "staticData": null,
   "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "78a0490306270e13cd9e2907d3ad57311cb3c0b89d42ffda74fc20e839728e03"
+    "templateCredsSetupCompleted": true
   },
-  "id": "bZu7Ku16BbgSj504",
   "tags": []
 }

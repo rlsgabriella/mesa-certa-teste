@@ -1,0 +1,627 @@
+{
+  "versao_script": "1.0",
+  "referencia": {
+    "data_hora_brasilia": "2026-10-12 08:00:00",
+    "periodo_inicio": "2026-10-05 00:00:00",
+    "periodo_fim_exclusivo": "2026-10-12 00:00:00",
+    "fuso": "America/Sao_Paulo (UTC-3)",
+    "gerado_em_brasilia": "2026-10-29 13:55:39",
+    "prazo_primeiro_contato_horas_uteis": 4.0,
+    "horario_comercial": "segunda a sexta, 8h às 18h"
+  },
+  "fontes": {
+    "negocios_no_crm_ate_a_referencia": 391,
+    "ultimo_registro_do_crm_no_banco": "2026-10-11 23:52:57",
+    "pedidos_lidos": 284,
+    "pedidos_do_banco": 100,
+    "pedidos_so_do_lote": 184,
+    "lote": {
+      "lote_informado": true,
+      "linhas": 201,
+      "json_invalidos": 2,
+      "assinatura_valida": 198,
+      "assinatura_invalida": 3,
+      "assinatura_nao_verificada": 0,
+      "reenvios_excedentes": 15
+    },
+    "primeiro_pedido_brasilia": "2026-09-28 05:59:44",
+    "ultimo_pedido_brasilia": "2026-10-11 18:16:24"
+  },
+  "indicadores_comprovados": {
+    "funil": {
+      "descricao": "Negócios por etapa na data de referência (última etapa do histórico até a referência).",
+      "total": 391,
+      "por_etapa": {
+        "Novo": 106,
+        "Contato": 133,
+        "Reunião marcada": 43,
+        "Reunião realizada": 37,
+        "Perdido": 72
+      },
+      "reunioes_marcada_ou_realizada": 80,
+      "perdidos_pela_automacao_de_limpeza": 22,
+      "perdidos_sem_nenhum_contato": 20,
+      "conferencia_etapa_atual_do_crm_diferente_da_etapa_na_referencia": 0
+    },
+    "negocios_criados_e_atualizados": {
+      "descricao": "Criados: data de criação no período. Atualizados: data da última atualização no período (é a definição que reproduz a planilha da gestora).",
+      "criados": 142,
+      "criados_por_origem": {
+        "Site": 133,
+        "Manual": 9
+      },
+      "criados_por_dia": {
+        "2026-10-05": 22,
+        "2026-10-06": 25,
+        "2026-10-07": 20,
+        "2026-10-08": 20,
+        "2026-10-09": 24,
+        "2026-10-10": 13,
+        "2026-10-11": 18
+      },
+      "atualizados": 187,
+      "atualizados_por_dia": {
+        "2026-10-05": 18,
+        "2026-10-06": 45,
+        "2026-10-07": 21,
+        "2026-10-08": 24,
+        "2026-10-09": 27,
+        "2026-10-10": 28,
+        "2026-10-11": 24
+      },
+      "atualizados_que_foram_criados_antes_do_periodo": 45,
+      "atualizados_pela_automacao_de_limpeza": 22,
+      "negocios_com_mudanca_de_etapa_no_periodo": 180
+    },
+    "prazo_primeiro_contato_todos_os_negocios_criados": {
+      "descricao": "Todos os negócios criados no período, sem separar teste, suporte ou fornecedor. Prazo: 4 horas úteis (seg a sex, 8h às 18h, Brasília).",
+      "por_responsavel": {
+        "sdr_1": {
+          "negocios": 47,
+          "com_contato": 25,
+          "contato_no_prazo": 18,
+          "contato_atrasado": 7,
+          "sem_contato_prazo_vencido": 7,
+          "sem_contato_ainda_no_prazo": 9,
+          "perdido_sem_contato": 6,
+          "decidiveis": 32,
+          "pct_no_prazo_entre_decidiveis": 56.2,
+          "ic95_pct_no_prazo": [
+            39.3,
+            71.8
+          ],
+          "mediana_horas_uteis": 2.0,
+          "p90_horas_uteis": 4.72
+        },
+        "sdr_2": {
+          "negocios": 48,
+          "com_contato": 18,
+          "contato_no_prazo": 12,
+          "contato_atrasado": 6,
+          "sem_contato_prazo_vencido": 10,
+          "sem_contato_ainda_no_prazo": 16,
+          "perdido_sem_contato": 4,
+          "decidiveis": 28,
+          "pct_no_prazo_entre_decidiveis": 42.9,
+          "ic95_pct_no_prazo": [
+            26.5,
+            60.9
+          ],
+          "mediana_horas_uteis": 2.69,
+          "p90_horas_uteis": 5.08
+        },
+        "sdr_3": {
+          "negocios": 47,
+          "com_contato": 25,
+          "contato_no_prazo": 19,
+          "contato_atrasado": 6,
+          "sem_contato_prazo_vencido": 6,
+          "sem_contato_ainda_no_prazo": 13,
+          "perdido_sem_contato": 3,
+          "decidiveis": 31,
+          "pct_no_prazo_entre_decidiveis": 61.3,
+          "ic95_pct_no_prazo": [
+            43.8,
+            76.3
+          ],
+          "mediana_horas_uteis": 1.63,
+          "p90_horas_uteis": 4.45
+        },
+        "TOTAL": {
+          "negocios": 142,
+          "com_contato": 68,
+          "contato_no_prazo": 49,
+          "contato_atrasado": 19,
+          "sem_contato_prazo_vencido": 23,
+          "sem_contato_ainda_no_prazo": 38,
+          "perdido_sem_contato": 13,
+          "decidiveis": 91,
+          "pct_no_prazo_entre_decidiveis": 53.8,
+          "ic95_pct_no_prazo": [
+            43.7,
+            63.7
+          ],
+          "mediana_horas_uteis": 2.2,
+          "p90_horas_uteis": 5.08
+        }
+      }
+    },
+    "sem_retorno_na_referencia": {
+      "descricao": "Negócios em Novo, sem primeiro contato até a referência.",
+      "em_novo_sem_contato": 106,
+      "com_prazo_vencido": 68,
+      "ainda_no_prazo": 38,
+      "vencidos_por_responsavel": {
+        "sdr_2": 27,
+        "sdr_3": 23,
+        "sdr_1": 18
+      },
+      "vencidos_por_faixa_de_espera_horas_uteis": {
+        "0-4": 0,
+        "4-8": 2,
+        "8-20": 5,
+        "20-40": 12,
+        "40-100": 38,
+        "100-mais": 11
+      },
+      "vencidos_por_mes_de_criacao": {
+        "2026-08": 7,
+        "2026-09": 13,
+        "2026-10": 48
+      }
+    }
+  },
+  "estimativas": {
+    "aviso": "Dependem da regra de classificação por texto e do cruzamento por e-mail/telefone. Podem mudar se a regra mudar.",
+    "pedidos_do_periodo": {
+      "pedidos_distintos": 175,
+      "por_classe": {
+        "comercial": 136,
+        "suporte": 8,
+        "teste": 13,
+        "spam": 2,
+        "lixo_provavel": 7,
+        "assinatura_invalida": 3,
+        "fornecedor": 6
+      },
+      "comerciais": 136,
+      "pessoas_distintas_entre_comerciais": 111,
+      "pessoas_distintas_ignorando_nono_digito": 109,
+      "emails_que_pediram_mais_de_uma_vez": 18
+    },
+    "reconciliacao_pedidos_comerciais_com_o_crm": {
+      "comerciais": 136,
+      "viraram_negocio": 99,
+      "pessoa_ja_tinha_negocio": 25,
+      "sem_correspondencia_no_crm": 12,
+      "maior_atraso_entre_pedido_e_negocio_em_segundos": 20.0,
+      "ausentes": [
+        {
+          "event_id": "evt_500110",
+          "recebido_em_brasilia": "2026-10-05 00:42:18",
+          "nome": "João Almeida",
+          "telefone": "(31)976637920",
+          "email": "joaoalmeida974@outlook.com",
+          "fonte": "lote_webhook",
+          "assinatura": "valida"
+        },
+        {
+          "event_id": "evt_500127",
+          "recebido_em_brasilia": "2026-10-05 14:24:10",
+          "nome": "Fábio Teixeira",
+          "telefone": "(61)932001790",
+          "email": "fabioteixeira@gmail.com",
+          "fonte": "lote_webhook",
+          "assinatura": "valida"
+        },
+        {
+          "event_id": "evt_500154",
+          "recebido_em_brasilia": "2026-10-06 14:05:23",
+          "nome": "Raquel Rocha",
+          "telefone": "+5581911628421",
+          "email": "raquelrocha@uol.com.br",
+          "fonte": "lote_webhook",
+          "assinatura": "valida"
+        },
+        {
+          "event_id": "evt_500158",
+          "recebido_em_brasilia": "2026-10-06 15:43:11",
+          "nome": "Aline Barbosa",
+          "telefone": "(71)991886327",
+          "email": "alinebarbosa228@gmail.com",
+          "fonte": "lote_webhook",
+          "assinatura": "valida"
+        },
+        {
+          "event_id": "evt_500187",
+          "recebido_em_brasilia": "2026-10-07 14:23:44",
+          "nome": "Thiago Costa",
+          "telefone": "(11) 92474-3787",
+          "email": "thiago_costa176@yahoo.com.br",
+          "fonte": "lote_webhook",
+          "assinatura": "valida"
+        },
+        {
+          "event_id": "evt_500191",
+          "recebido_em_brasilia": "2026-10-07 15:38:10",
+          "nome": "Juliana Cavalcanti",
+          "telefone": "19911938637",
+          "email": "julianacavalcanti909@gmail.com",
+          "fonte": "lote_webhook",
+          "assinatura": "valida"
+        },
+        {
+          "event_id": "evt_500194",
+          "recebido_em_brasilia": "2026-10-07 18:23:57",
+          "nome": "Diego Martins",
+          "telefone": "+55 47 94332-1351",
+          "email": "diego.martins@uol.com.br",
+          "fonte": "lote_webhook",
+          "assinatura": "valida"
+        },
+        {
+          "event_id": "evt_500198",
+          "recebido_em_brasilia": "2026-10-07 23:50:49",
+          "nome": "Larissa Santos",
+          "telefone": "31976637920",
+          "email": "larissa.santos555@gmail.com",
+          "fonte": "lote_webhook",
+          "assinatura": "valida"
+        },
+        {
+          "event_id": "evt_500236",
+          "recebido_em_brasilia": "2026-10-09 10:18:27",
+          "nome": "Sérgio Rocha",
+          "telefone": "47 97030 4750",
+          "email": "sergio.rocha144@gmail.com",
+          "fonte": "lote_webhook",
+          "assinatura": "valida"
+        },
+        {
+          "event_id": "evt_500260",
+          "recebido_em_brasilia": "2026-10-10 09:33:25",
+          "nome": "Adriana Martins",
+          "telefone": "+5519922074618",
+          "email": "adrianamartins801@gmail.com",
+          "fonte": "lote_webhook",
+          "assinatura": "valida"
+        },
+        {
+          "event_id": "evt_500269",
+          "recebido_em_brasilia": "2026-10-10 14:20:19",
+          "nome": "Débora Martins",
+          "telefone": "71963641471",
+          "email": "debora_martins223@gmail.com",
+          "fonte": "lote_webhook",
+          "assinatura": "valida"
+        },
+        {
+          "event_id": "evt_500279",
+          "recebido_em_brasilia": "2026-10-11 11:13:59",
+          "nome": "José Ribeiro",
+          "telefone": "(47) 7030-4750",
+          "email": "joseribeiro@gmail.com",
+          "fonte": "lote_webhook",
+          "assinatura": "valida"
+        }
+      ]
+    },
+    "pedidos_nao_comerciais_e_o_crm": {
+      "suporte": {
+        "pedidos": 8,
+        "pedidos_com_negocio_no_crm": 8,
+        "negocios_no_crm": 8
+      },
+      "fornecedor": {
+        "pedidos": 6,
+        "pedidos_com_negocio_no_crm": 5,
+        "negocios_no_crm": 5
+      },
+      "teste": {
+        "pedidos": 13,
+        "pedidos_com_negocio_no_crm": 11,
+        "negocios_no_crm": 10
+      },
+      "lixo_provavel": {
+        "pedidos": 7,
+        "pedidos_com_negocio_no_crm": 3,
+        "negocios_no_crm": 3
+      },
+      "spam": {
+        "pedidos": 2,
+        "pedidos_com_negocio_no_crm": 1,
+        "negocios_no_crm": 1
+      },
+      "assinatura_invalida": {
+        "pedidos": 3,
+        "pedidos_com_negocio_no_crm": 0,
+        "negocios_no_crm": 0
+      }
+    },
+    "negocios_criados_sem_pedido_correspondente": {
+      "total": 16,
+      "origem_manual": 9,
+      "site_criados_depois_do_ultimo_pedido_conhecido": 7
+    },
+    "prazo_primeiro_contato_pedidos_comerciais": {
+      "descricao": "Só negócios criados no período que nasceram de um pedido classificado como comercial.",
+      "por_responsavel": {
+        "sdr_1": {
+          "negocios": 33,
+          "com_contato": 23,
+          "contato_no_prazo": 17,
+          "contato_atrasado": 6,
+          "sem_contato_prazo_vencido": 5,
+          "sem_contato_ainda_no_prazo": 5,
+          "perdido_sem_contato": 0,
+          "decidiveis": 28,
+          "pct_no_prazo_entre_decidiveis": 60.7,
+          "ic95_pct_no_prazo": [
+            42.4,
+            76.4
+          ],
+          "mediana_horas_uteis": 1.33,
+          "p90_horas_uteis": 4.72
+        },
+        "sdr_2": {
+          "negocios": 33,
+          "com_contato": 17,
+          "contato_no_prazo": 12,
+          "contato_atrasado": 5,
+          "sem_contato_prazo_vencido": 7,
+          "sem_contato_ainda_no_prazo": 9,
+          "perdido_sem_contato": 0,
+          "decidiveis": 24,
+          "pct_no_prazo_entre_decidiveis": 50.0,
+          "ic95_pct_no_prazo": [
+            31.4,
+            68.6
+          ],
+          "mediana_horas_uteis": 2.6,
+          "p90_horas_uteis": 4.56
+        },
+        "sdr_3": {
+          "negocios": 33,
+          "com_contato": 22,
+          "contato_no_prazo": 17,
+          "contato_atrasado": 5,
+          "sem_contato_prazo_vencido": 1,
+          "sem_contato_ainda_no_prazo": 10,
+          "perdido_sem_contato": 0,
+          "decidiveis": 23,
+          "pct_no_prazo_entre_decidiveis": 73.9,
+          "ic95_pct_no_prazo": [
+            53.5,
+            87.5
+          ],
+          "mediana_horas_uteis": 1.89,
+          "p90_horas_uteis": 4.23
+        },
+        "TOTAL": {
+          "negocios": 99,
+          "com_contato": 62,
+          "contato_no_prazo": 46,
+          "contato_atrasado": 16,
+          "sem_contato_prazo_vencido": 13,
+          "sem_contato_ainda_no_prazo": 24,
+          "perdido_sem_contato": 0,
+          "decidiveis": 75,
+          "pct_no_prazo_entre_decidiveis": 61.3,
+          "ic95_pct_no_prazo": [
+            50.0,
+            71.5
+          ],
+          "mediana_horas_uteis": 2.08,
+          "p90_horas_uteis": 4.72
+        }
+      },
+      "comparacao_entre_responsaveis": {
+        "sdr_1": {
+          "p_fisher_contra_os_demais": 1.0
+        },
+        "sdr_2": {
+          "p_fisher_contra_os_demais": 0.207
+        },
+        "sdr_3": {
+          "p_fisher_contra_os_demais": 0.199
+        },
+        "diferenca_estatisticamente_comprovada": false
+      },
+      "autoria_do_contato": {
+        "negocios_em_que_o_ultimo_registro_e_o_contato": 35,
+        "autor_igual_ao_responsavel": 14,
+        "pct_autor_igual_ao_responsavel": 40.0
+      }
+    },
+    "sem_retorno_por_tipo_de_negocio": {
+      "vencidos_por_tipo": {
+        "sem_pedido": 11,
+        "comercial": 47,
+        "nao_comercial:teste": 5,
+        "sem_pedido_manual": 1,
+        "nao_comercial:suporte": 4
+      },
+      "vencidos_comerciais_por_responsavel": {
+        "sdr_3": 12,
+        "sdr_1": 14,
+        "sdr_2": 21
+      },
+      "para_cobrar_hoje_mais_antigos": [
+        {
+          "deal_id": 20002,
+          "nome": "Patrícia Oliveira",
+          "telefone": "(13) 96508-0403",
+          "responsavel": "sdr_2",
+          "criado_em": "2026-08-01 17:56:16",
+          "horas_uteis_de_espera": 500.0,
+          "tipo": "sem_pedido"
+        },
+        {
+          "deal_id": 20019,
+          "nome": "Márcia Cavalcanti",
+          "telefone": "81946082972",
+          "responsavel": "sdr_3",
+          "criado_em": "2026-08-08 15:35:07",
+          "horas_uteis_de_espera": 450.0,
+          "tipo": "sem_pedido"
+        },
+        {
+          "deal_id": 20021,
+          "nome": "Mateus Ribeiro",
+          "telefone": "(19) 94191-7474",
+          "responsavel": "sdr_3",
+          "criado_em": "2026-08-08 22:15:07",
+          "horas_uteis_de_espera": 450.0,
+          "tipo": "sem_pedido"
+        },
+        {
+          "deal_id": 20055,
+          "nome": "Ana Santos",
+          "telefone": "(61) 4422-6989",
+          "responsavel": "sdr_3",
+          "criado_em": "2026-08-21 16:54:29",
+          "horas_uteis_de_espera": 351.1,
+          "tipo": "sem_pedido"
+        },
+        {
+          "deal_id": 20056,
+          "nome": "Camila Freitas",
+          "telefone": "(71) 91576-4963",
+          "responsavel": "sdr_3",
+          "criado_em": "2026-08-22 02:41:45",
+          "horas_uteis_de_espera": 350.0,
+          "tipo": "sem_pedido"
+        },
+        {
+          "deal_id": 20076,
+          "nome": "Raquel Moreira",
+          "telefone": "85919191112",
+          "responsavel": "sdr_1",
+          "criado_em": "2026-08-29 16:57:34",
+          "horas_uteis_de_espera": 300.0,
+          "tipo": "sem_pedido"
+        },
+        {
+          "deal_id": 20079,
+          "nome": "Rafael Carvalho",
+          "telefone": "81938884830",
+          "responsavel": "sdr_2",
+          "criado_em": "2026-08-31 09:44:04",
+          "horas_uteis_de_espera": 298.3,
+          "tipo": "sem_pedido"
+        },
+        {
+          "deal_id": 20111,
+          "nome": "Lucas Dias",
+          "telefone": "(19) 98086-8921",
+          "responsavel": "sdr_1",
+          "criado_em": "2026-09-12 20:49:25",
+          "horas_uteis_de_espera": 200.0,
+          "tipo": "sem_pedido"
+        },
+        {
+          "deal_id": 20117,
+          "nome": "Sérgio Ribeiro",
+          "telefone": "(85) 91663-2459",
+          "responsavel": "sdr_3",
+          "criado_em": "2026-09-15 05:38:17",
+          "horas_uteis_de_espera": 190.0,
+          "tipo": "sem_pedido"
+        },
+        {
+          "deal_id": 20120,
+          "nome": "Thiago Oliveira",
+          "telefone": "31 99673 9725",
+          "responsavel": "sdr_2",
+          "criado_em": "2026-09-16 12:20:19",
+          "horas_uteis_de_espera": 175.7,
+          "tipo": "sem_pedido"
+        },
+        {
+          "deal_id": 20124,
+          "nome": "Lucas Rocha",
+          "telefone": "(11) 94496-4660",
+          "responsavel": "sdr_3",
+          "criado_em": "2026-09-18 16:45:54",
+          "horas_uteis_de_espera": 151.2,
+          "tipo": "sem_pedido"
+        },
+        {
+          "deal_id": 20144,
+          "nome": "Patrícia Moreira",
+          "telefone": "(85)921962995",
+          "responsavel": "sdr_3",
+          "criado_em": "2026-09-28 08:12:58",
+          "horas_uteis_de_espera": 99.8,
+          "tipo": "comercial"
+        },
+        {
+          "deal_id": 20153,
+          "nome": "Bruno Lima",
+          "telefone": "+5511961776624",
+          "responsavel": "sdr_3",
+          "criado_em": "2026-09-28 12:19:54",
+          "horas_uteis_de_espera": 95.7,
+          "tipo": "comercial"
+        },
+        {
+          "deal_id": 20154,
+          "nome": "Mateus Pereira",
+          "telefone": "11 95618 2310",
+          "responsavel": "sdr_3",
+          "criado_em": "2026-09-28 12:29:55",
+          "horas_uteis_de_espera": 95.5,
+          "tipo": "comercial"
+        },
+        {
+          "deal_id": 20167,
+          "nome": "Camila Pereira",
+          "telefone": "(19) 2399-0549",
+          "responsavel": "sdr_3",
+          "criado_em": "2026-09-29 00:56:29",
+          "horas_uteis_de_espera": 90.0,
+          "tipo": "comercial"
+        }
+      ],
+      "para_cobrar_hoje_total": 59
+    }
+  },
+  "dados_incompletos": [
+    {
+      "codigo": "entregas_com_json_invalido",
+      "descricao": "Entregas do lote com corpo que não é JSON; ignoradas (o mesmo pedido costuma chegar inteiro em outra entrega).",
+      "quantidade": 2
+    },
+    {
+      "codigo": "pedidos_terminam_antes_do_fim_do_periodo",
+      "descricao": "O último pedido conhecido é de 2026-10-11 18:16:24; pedidos depois disso não estão nos dados. 7 negócios do site foram criados depois dele e ficam sem pedido para comparar.",
+      "quantidade": 7
+    },
+    {
+      "codigo": "negocios_sem_pedido_para_classificar",
+      "descricao": "Negócios em Novo com prazo vencido que não têm pedido correspondente nos dados; não dá para saber se são comerciais.",
+      "quantidade": 11
+    },
+    {
+      "codigo": "contatos_depois_da_referencia",
+      "descricao": "Contatos feitos depois da data de referência não são conhecidos: um negócio 'sem contato' pode já ter sido atendido depois.",
+      "quantidade": null
+    },
+    {
+      "codigo": "contatos_registrados_fora_do_horario_comercial",
+      "descricao": "Primeiros contatos com hora fora de seg a sex 8h às 18h; contam até o fim do último período útil.",
+      "quantidade": 49
+    }
+  ],
+  "limitacoes": [
+    "O prazo é contado do cadastro do negócio no CRM até o campo 'primeiro_contato_em'; o banco não diz quem fez o contato nem por qual canal.",
+    "O responsável pelo negócio nem sempre é quem registrou o contato (em 14 de 35 negócios com autoria identificável, o autor é o próprio responsável).",
+    "Com poucos negócios por pessoa, diferenças entre SDRs podem ser acaso; veja 'comparacao_entre_responsaveis' antes de cobrar alguém.",
+    "Feriados não são descontados (suposição registrada em suposicoes.md).",
+    "A classificação de pedidos (comercial, suporte, fornecedor, teste, lixo, spam) é uma regra por texto, nome e e-mail e não foi validada por pessoas.",
+    "O cruzamento pedido x negócio usa e-mail ou telefone iguais; mesma pessoa com outro e-mail e outro telefone não é reconhecida.",
+    "Um pedido 'sem correspondência' pode ter outra explicação além de falha de integração (cadastro manual com outros dados, por exemplo).",
+    "A data de última atualização do negócio mostra só a alteração mais recente; ela serve para reproduzir a planilha da gestora, mas não conta pedidos."
+  ],
+  "resumo_texto": "Resumo da semana de 05/10 a 11/10 (posição em 12/10 às 08:00, horário de Brasília)\n\n1. COMO ESTÁ O FUNIL AGORA\n   Você tem 391 negócios: 106 em Novo, 133 em Contato, 43 em Reunião marcada, 37 em Reunião realizada, 72 em Perdido.\n   80 já viraram reunião (marcada ou realizada).\n   Atenção: 22 dos perdidos foram movidos pela limpeza automática, sem ligação de ninguém.\n\n2. QUANTOS PEDIDOS CHEGARAM\n   O CRM criou 142 negócios novos na semana. O número de negócios 'atualizados' na semana é 187; ele inclui 45 negócios antigos que só foram mexidos (22 deles pela limpeza automática). É por isso que ele fica bem acima dos pedidos reais.\n   Pelos pedidos do formulário: 175 pedidos distintos, dos quais 136 pedidos de demonstração (de 111 pessoas; 18 pessoas pediram mais de uma vez). O restante é suporte, fornecedor, teste, lixo ou pedido com assinatura inválida.\n\n3. PEDIDOS QUE NÃO CHEGARAM AO CRM\n   Dos 136 pedidos de demonstração, 99 viraram negócio, 25 eram de pessoas que já tinham negócio e 12 não aparecem no CRM.\n   - João Almeida, tel. (31)976637920, pediu em 05/10 às 00:42\n   - Fábio Teixeira, tel. (61)932001790, pediu em 05/10 às 14:24\n   - Raquel Rocha, tel. +5581911628421, pediu em 06/10 às 14:05\n   - Aline Barbosa, tel. (71)991886327, pediu em 06/10 às 15:43\n   - Thiago Costa, tel. (11) 92474-3787, pediu em 07/10 às 14:23\n   - Juliana Cavalcanti, tel. 19911938637, pediu em 07/10 às 15:38\n   - Diego Martins, tel. +55 47 94332-1351, pediu em 07/10 às 18:23\n   - Larissa Santos, tel. 31976637920, pediu em 07/10 às 23:50\n   - Sérgio Rocha, tel. 47 97030 4750, pediu em 09/10 às 10:18\n   - Adriana Martins, tel. +5519922074618, pediu em 10/10 às 09:33\n   - Débora Martins, tel. 71963641471, pediu em 10/10 às 14:20\n   - José Ribeiro, tel. (47) 7030-4750, pediu em 11/10 às 11:13\n   Também há 27 negócios no CRM que nasceram de suporte, fornecedor, teste ou lixo e ocupam a fila do time.\n\n4. RETORNO EM ATÉ 4 HORAS ÚTEIS (seg a sex, 8h às 18h)\n   Dos 99 negócios de pedidos de demonstração criados na semana: 46 foram atendidos no prazo, 16 atendidos fora do prazo, 13 sem retorno e já vencidos, 24 sem retorno mas ainda dentro do prazo.\n   Entre os casos que já dá para julgar (75), 61% foram no prazo. O tempo típico até a ligação foi de 2,08 horas úteis (mediana).\n   - sdr_1: 17 de 28 no prazo (61%), 5 sem retorno vencido.\n   - sdr_2: 12 de 24 no prazo (50%), 7 sem retorno vencido.\n   - sdr_3: 17 de 23 no prazo (74%), 1 sem retorno vencido.\n   Com esses números não dá para afirmar que um SDR atrasa mais que os outros: a diferença pode ser acaso. Também não sabemos quem fez cada ligação, só quem é o responsável pelo negócio.\n\n5. QUEM PRECISA DE RETORNO HOJE\n   106 negócios estão em 'Novo' sem nenhum contato; 68 já passaram do prazo de 4 horas úteis: sdr_1 18, sdr_2 27, sdr_3 23.\n   Para cobrar hoje (pedidos comerciais ou sem pedido para classificar): 59. Os mais antigos:\n   - negócio 20002, Patrícia Oliveira, sdr_2, esperando há 500 horas úteis\n   - negócio 20019, Márcia Cavalcanti, sdr_3, esperando há 450 horas úteis\n   - negócio 20021, Mateus Ribeiro, sdr_3, esperando há 450 horas úteis\n   - negócio 20055, Ana Santos, sdr_3, esperando há 351 horas úteis\n   - negócio 20056, Camila Freitas, sdr_3, esperando há 350 horas úteis\n\n6. O QUE OS DADOS NÃO PERMITEM AFIRMAR\n   - Entregas do lote com corpo que não é JSON; ignoradas (o mesmo pedido costuma chegar inteiro em outra entrega). Quantidade: 2.\n   - O último pedido conhecido é de 2026-10-11 18:16:24; pedidos depois disso não estão nos dados. 7 negócios do site foram criados depois dele e ficam sem pedido para comparar.\n   - Negócios em Novo com prazo vencido que não têm pedido correspondente nos dados; não dá para saber se são comerciais. Quantidade: 11.\n   - Contatos feitos depois da data de referência não são conhecidos: um negócio 'sem contato' pode já ter sido atendido depois.\n   - Primeiros contatos com hora fora de seg a sex 8h às 18h; contam até o fim do último período útil. Quantidade: 49.\n   - O prazo é contado do cadastro do negócio no CRM até o campo 'primeiro_contato_em'; o banco não diz quem fez o contato nem por qual canal.\n   - O responsável pelo negócio nem sempre é quem registrou o contato (em 14 de 35 negócios com autoria identificável, o autor é o próprio responsável).\n   - Com poucos negócios por pessoa, diferenças entre SDRs podem ser acaso; veja 'comparacao_entre_responsaveis' antes de cobrar alguém.\n   - Feriados não são descontados (suposição registrada em suposicoes.md).\n\nNúmeros 'comprovados' vêm direto dos dados; os de pedidos, ausentes e prazo por pedido comercial são estimativas (dependem de uma regra de classificação). Detalhes no arquivo JSON."
+}

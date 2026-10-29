@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Verificar segredos e riscos de publicação ao salvar",
+      "trigger": "PostFileSave",
+      "description": "Somente leitura: procura valores de segredo (.env, token do CRM mock), Bearer, JWT, chaves e .env não ignorado no arquivo salvo. Não grava nem apaga nada e nunca imprime o valor encontrado; sai com 1 para avisar.",
+      "matcher": "\\.(md|json|jsonl|txt|py|js|ts|ps1|yml|yaml|csv|html)$|(^|[\\\\/])\\.env(\\.[^\\\\/]*)?$",
+      "action": {
+        "type": "command",
+        "command": "py .kiro/scripts/verificar_publicacao.py --stdin",
+        "timeout": 20
+      }
+    }
+  ]
+}

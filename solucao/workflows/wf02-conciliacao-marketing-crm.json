@@ -1,15 +1,18 @@
 {
-  "name": "Mesa Certa|02-Conciliação Marketing × CRM",
+  "name": "Mesa Certa|02-Conciliação Marketing × CRM (corrigido v2)",
+  "id": "fcMKsKzpcdAMKnr0",
+  "versionId": "63d1f2b0-2e5b-4c3c-97c8-3d2d11eede9f",
+  "active": false,
   "nodes": [
     {
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -1776,
-        -224
+        -1056,
+        160
       ],
-      "id": "f047ec18-5b01-4f35-aa5f-e8fbdc2a9098",
+      "id": "fc697f0e-56a4-4706-a6e0-613d7bf85822",
       "name": "When clicking ‘Execute workflow’"
     },
     {
@@ -22,7 +25,7 @@
           "parameters": [
             {
               "name": "email",
-              "value": "= {{ $json.email }}"
+              "value": "={{ $('Buscar Leads Pendentes').item.json.email }}"
             }
           ]
         },
@@ -31,10 +34,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -1152,
-        -368
+        -432,
+        16
       ],
-      "id": "be50ff3e-4d0a-40c1-b251-549ff2114272",
+      "id": "42d3c667-0ab8-4674-aa52-cc06e917c633",
       "name": "CRM | Consultar negócio existente",
       "retryOnFail": true,
       "waitBetweenTries": 2000,
@@ -57,7 +60,7 @@
           "conditions": [
             {
               "id": "c7ae0aec-47c3-45b3-b153-a3282462bd0f",
-              "leftValue": "=\n{{ $json.data.length }}\n",
+              "leftValue": "={{ $json.data.length }}",
               "rightValue": 0,
               "operator": {
                 "type": "number",
@@ -73,27 +76,27 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -944,
-        -368
+        -224,
+        16
       ],
-      "id": "092f7438-8cb1-4577-af48-b6e9c1352b44",
+      "id": "8210ecd5-9117-4742-b5d3-0a4e478c77ad",
       "name": "Negócio existe?"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "\nSELECT\n    event_id,\n    estado_sync,\n    deal_id\nFROM sync_eventos\nWHERE event_id = 'teste-hmac-valido-001';\n",
+        "query": "UPDATE sync_eventos\nSET\n    estado_sync = 'sincronizado',\n    deal_id = $1,\n    ultimo_erro = NULL,\n    atualizado_em = datetime('now')\nWHERE event_id = $2\n  AND estado_sync = 'pendente';",
         "options": {
-          "queryReplacement": "=\n"
+          "queryReplacement": "={{ $json.data[0].deal_id }},{{ $('Buscar Leads Pendentes').item.json.event_id }}"
         }
       },
       "type": "n8n-nodes-sqlite3.sqliteNode",
       "typeVersion": 2,
       "position": [
-        -720,
-        -384
+        0,
+        0
       ],
-      "id": "3580ac44-7025-4682-821b-40f80a14002f",
+      "id": "f6cb44aa-078d-4e3e-8579-d930c82ba85f",
       "name": "Vincular Negócio Existente",
       "credentials": {
         "sqliteCredentialsApi": {
@@ -138,10 +141,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -800,
-        -160
+        -80,
+        224
       ],
-      "id": "1c2d5c4a-d882-48ef-ad19-8bcf25bc1b0d",
+      "id": "08b0f65c-d258-4dbc-8030-8c07d4089e6e",
       "name": "Criar negócio ausente.",
       "credentials": {
         "httpHeaderAuth": {
@@ -170,10 +173,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -576,
-        0
+        144,
+        384
       ],
-      "id": "2ceb1b6b-f636-41db-a591-1273ab355c73",
+      "id": "4eab5adc-93fb-47c3-843f-991113307826",
       "name": "Verificar criação após erro",
       "retryOnFail": true,
       "waitBetweenTries": 2000,
@@ -190,13 +193,13 @@
         "query": "SELECT\n  s.event_id,\n  s.estado_sync,\n  s.deal_id,\n  s.tentativas,\n  p.nome,\n  p.email,\n  p.telefone,\n  p.restaurante,\n  p.origem\nFROM sync_eventos AS s\nLEFT JOIN pedidos_formulario AS p\n  ON s.event_id = p.event_id\nWHERE s.estado_sync = 'pendente'\n  AND p.classificacao = 'comercial'\nORDER BY s.recebido_em ASC;",
         "options": {}
       },
-      "type": "CUSTOM.sqliteNode",
+      "type": "n8n-nodes-sqlite3.sqliteNode",
       "typeVersion": 2,
       "position": [
-        -1568,
-        -224
+        -848,
+        160
       ],
-      "id": "f49cf008-8794-445d-b947-4426d6196da6",
+      "id": "33085e4b-a75b-494d-8a31-08e7e7c0cf16",
       "name": "Buscar Leads Pendentes",
       "alwaysOutputData": true,
       "credentials": {
@@ -234,16 +237,16 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1376,
-        -224
+        -656,
+        160
       ],
-      "id": "9fbab18e-0e9b-4942-8827-324ca2a7e6e3",
+      "id": "267b869a-c4f1-48b6-b2fe-376a8e799897",
       "name": "Lead pendente encontrado?"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "\nUPDATE sync_eventos\nSET\n    estado_sync = 'sincronizado',\n    deal_id = $1,\n    ultimo_erro = NULL,\n    atualizado_em = datetime('now')\nWHERE event_id = $2\n  AND estado_sync = 'pendente';\n",
+        "query": "UPDATE sync_eventos\nSET\n    estado_sync = 'sincronizado',\n    deal_id = $1,\n    ultimo_erro = NULL,\n    atualizado_em = datetime('now')\nWHERE event_id = $2\n  AND estado_sync = 'pendente';",
         "options": {
           "queryReplacement": "={{ $json.deal_id }},{{ $('Buscar Leads Pendentes').item.json.event_id }}"
         }
@@ -251,10 +254,10 @@
       "type": "n8n-nodes-sqlite3.sqliteNode",
       "typeVersion": 2,
       "position": [
-        -560,
-        -176
+        160,
+        208
       ],
-      "id": "4c569ec1-7115-43df-a932-d92733e333b9",
+      "id": "50376666-dad2-4303-8127-0d790f288a77",
       "name": "Atualizar SQLite.",
       "credentials": {
         "sqliteCredentialsApi": {
@@ -291,14 +294,59 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -384,
-        0
+        336,
+        384
       ],
-      "id": "8972f5ba-7d0f-4add-bbf2-9a904aa8e4ec",
+      "id": "c8b42525-3847-4061-b45f-5df75c7d3ed5",
       "name": "Negócio criado após erro?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE sync_eventos\nSET\n    estado_sync = 'sincronizado',\n    deal_id = $1,\n    ultimo_erro = NULL,\n    atualizado_em = datetime('now')\nWHERE event_id = $2\n  AND estado_sync = 'pendente';",
+        "options": {
+          "queryReplacement": "={{ $json.data[0].deal_id }},{{ $('Buscar Leads Pendentes').item.json.event_id }}"
+        }
+      },
+      "type": "n8n-nodes-sqlite3.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        544,
+        288
+      ],
+      "id": "88ec8041-17df-4340-acde-f4aa7f86237e",
+      "name": "Confirmar Sincronização após Erro",
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE sync_eventos\nSET\n    estado_sync = 'falha',\n    tentativas = tentativas + 1,\n    ultimo_erro = 'POST falhou e GET posterior nao encontrou o negocio',\n    atualizado_em = datetime('now')\nWHERE event_id = $1\n  AND estado_sync = 'pendente';",
+        "options": {
+          "queryReplacement": "={{ $('Buscar Leads Pendentes').item.json.event_id }}"
+        }
+      },
+      "type": "n8n-nodes-sqlite3.sqliteNode",
+      "typeVersion": 2,
+      "position": [
+        544,
+        496
+      ],
+      "id": "8d515fa4-6789-4720-8b0f-c078fa9581cd",
+      "name": "Marcar Falha de Sincronização",
+      "credentials": {
+        "sqliteCredentialsApi": {
+          "id": "A6Zo3HG9VmdtVFOr",
+          "name": "SQLite Database account"
+        }
+      }
     }
   ],
-  "pinData": {},
   "connections": {
     "When clicking ‘Execute workflow’": {
       "main": [
@@ -390,19 +438,33 @@
           }
         ]
       ]
+    },
+    "Negócio criado após erro?": {
+      "main": [
+        [
+          {
+            "node": "Confirmar Sincronização após Erro",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Marcar Falha de Sincronização",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "0aeb3c75-dcc7-46fc-860b-8642e1682aae",
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "78a0490306270e13cd9e2907d3ad57311cb3c0b89d42ffda74fc20e839728e03"
-  },
-  "id": "tTDsv01lkDZqTnp1",
+  "pinData": {},
+  "staticData": null,
+  "meta": null,
   "tags": []
 }

@@ -1,0 +1,56 @@
+Resumo da semana de 05/10 a 11/10 (posição em 12/10 às 08:00, horário de Brasília)
+
+1. COMO ESTÁ O FUNIL AGORA
+   Você tem 391 negócios: 106 em Novo, 133 em Contato, 43 em Reunião marcada, 37 em Reunião realizada, 72 em Perdido.
+   80 já viraram reunião (marcada ou realizada).
+   Atenção: 22 dos perdidos foram movidos pela limpeza automática, sem ligação de ninguém.
+
+2. QUANTOS PEDIDOS CHEGARAM
+   O CRM criou 142 negócios novos na semana. O número de negócios 'atualizados' na semana é 187; ele inclui 45 negócios antigos que só foram mexidos (22 deles pela limpeza automática). É por isso que ele fica bem acima dos pedidos reais.
+   Pelos pedidos do formulário: 175 pedidos distintos, dos quais 136 pedidos de demonstração (de 111 pessoas; 18 pessoas pediram mais de uma vez). O restante é suporte, fornecedor, teste, lixo ou pedido com assinatura inválida.
+
+3. PEDIDOS QUE NÃO CHEGARAM AO CRM
+   Dos 136 pedidos de demonstração, 99 viraram negócio, 25 eram de pessoas que já tinham negócio e 12 não aparecem no CRM.
+   - João Almeida, tel. (31)976637920, pediu em 05/10 às 00:42
+   - Fábio Teixeira, tel. (61)932001790, pediu em 05/10 às 14:24
+   - Raquel Rocha, tel. +5581911628421, pediu em 06/10 às 14:05
+   - Aline Barbosa, tel. (71)991886327, pediu em 06/10 às 15:43
+   - Thiago Costa, tel. (11) 92474-3787, pediu em 07/10 às 14:23
+   - Juliana Cavalcanti, tel. 19911938637, pediu em 07/10 às 15:38
+   - Diego Martins, tel. +55 47 94332-1351, pediu em 07/10 às 18:23
+   - Larissa Santos, tel. 31976637920, pediu em 07/10 às 23:50
+   - Sérgio Rocha, tel. 47 97030 4750, pediu em 09/10 às 10:18
+   - Adriana Martins, tel. +5519922074618, pediu em 10/10 às 09:33
+   - Débora Martins, tel. 71963641471, pediu em 10/10 às 14:20
+   - José Ribeiro, tel. (47) 7030-4750, pediu em 11/10 às 11:13
+   Também há 27 negócios no CRM que nasceram de suporte, fornecedor, teste ou lixo e ocupam a fila do time.
+
+4. RETORNO EM ATÉ 4 HORAS ÚTEIS (seg a sex, 8h às 18h)
+   Dos 99 negócios de pedidos de demonstração criados na semana: 46 foram atendidos no prazo, 16 atendidos fora do prazo, 13 sem retorno e já vencidos, 24 sem retorno mas ainda dentro do prazo.
+   Entre os casos que já dá para julgar (75), 61% foram no prazo. O tempo típico até a ligação foi de 2,08 horas úteis (mediana).
+   - sdr_1: 17 de 28 no prazo (61%), 5 sem retorno vencido.
+   - sdr_2: 12 de 24 no prazo (50%), 7 sem retorno vencido.
+   - sdr_3: 17 de 23 no prazo (74%), 1 sem retorno vencido.
+   Com esses números não dá para afirmar que um SDR atrasa mais que os outros: a diferença pode ser acaso. Também não sabemos quem fez cada ligação, só quem é o responsável pelo negócio.
+
+5. QUEM PRECISA DE RETORNO HOJE
+   106 negócios estão em 'Novo' sem nenhum contato; 68 já passaram do prazo de 4 horas úteis: sdr_1 18, sdr_2 27, sdr_3 23.
+   Para cobrar hoje (pedidos comerciais ou sem pedido para classificar): 59. Os mais antigos:
+   - negócio 20002, Patrícia Oliveira, sdr_2, esperando há 500 horas úteis
+   - negócio 20019, Márcia Cavalcanti, sdr_3, esperando há 450 horas úteis
+   - negócio 20021, Mateus Ribeiro, sdr_3, esperando há 450 horas úteis
+   - negócio 20055, Ana Santos, sdr_3, esperando há 351 horas úteis
+   - negócio 20056, Camila Freitas, sdr_3, esperando há 350 horas úteis
+
+6. O QUE OS DADOS NÃO PERMITEM AFIRMAR
+   - Entregas do lote com corpo que não é JSON; ignoradas (o mesmo pedido costuma chegar inteiro em outra entrega). Quantidade: 2.
+   - O último pedido conhecido é de 2026-10-11 18:16:24; pedidos depois disso não estão nos dados. 7 negócios do site foram criados depois dele e ficam sem pedido para comparar.
+   - Negócios em Novo com prazo vencido que não têm pedido correspondente nos dados; não dá para saber se são comerciais. Quantidade: 11.
+   - Contatos feitos depois da data de referência não são conhecidos: um negócio 'sem contato' pode já ter sido atendido depois.
+   - Primeiros contatos com hora fora de seg a sex 8h às 18h; contam até o fim do último período útil. Quantidade: 49.
+   - O prazo é contado do cadastro do negócio no CRM até o campo 'primeiro_contato_em'; o banco não diz quem fez o contato nem por qual canal.
+   - O responsável pelo negócio nem sempre é quem registrou o contato (em 14 de 35 negócios com autoria identificável, o autor é o próprio responsável).
+   - Com poucos negócios por pessoa, diferenças entre SDRs podem ser acaso; veja 'comparacao_entre_responsaveis' antes de cobrar alguém.
+   - Feriados não são descontados (suposição registrada em suposicoes.md).
+
+Números 'comprovados' vêm direto dos dados; os de pedidos, ausentes e prazo por pedido comercial são estimativas (dependem de uma regra de classificação). Detalhes no arquivo JSON.

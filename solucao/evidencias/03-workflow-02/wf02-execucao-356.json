@@ -1,0 +1,49 @@
+{
+  "teste": "WF02 corrigido v2 - conciliacao do evento evt_t1_comercial_005",
+  "resultado": "APROVADO",
+  "workflow": {
+    "id": "fcMKsKzpcdAMKnr0",
+    "nome": "Mesa Certa|02-Conciliação Marketing × CRM (corrigido v2)",
+    "nos": 12,
+    "original_preservado": "tTDsv01lkDZqTnp1"
+  },
+  "execucao": {
+    "id": 356,
+    "status": "success",
+    "modo": "manual",
+    "iniciada_utc": "2026-10-29T16:17:07.045Z",
+    "finalizada_utc": "2026-10-29T16:17:07.822Z",
+    "iniciada_brasilia": "2026-10-29 13:17:07"
+  },
+  "nos_executados": {
+    "Buscar Leads Pendentes": "1 item: evt_t1_comercial_005",
+    "Lead pendente encontrado?": "ramo verdadeiro",
+    "CRM | Consultar negócio existente": "total 1, deal_id 20395",
+    "Negócio existe?": "ramo verdadeiro",
+    "Vincular Negócio Existente": "changes 1"
+  },
+  "nos_nao_executados": [
+    "Criar negócio ausente.",
+    "Atualizar SQLite.",
+    "Verificar criação após erro",
+    "Negócio criado após erro?",
+    "Confirmar Sincronização após Erro",
+    "Marcar Falha de Sincronização"
+  ],
+  "sqlite_depois": {
+    "event_id": "evt_t1_comercial_005",
+    "estado_sync": "sincronizado",
+    "deal_id": 20395,
+    "tentativas": 0,
+    "ultimo_erro": null,
+    "atualizado_em": "2026-10-29 16:17:07",
+    "sync_eventos_por_estado": { "sincronizado": 4 }
+  },
+  "crm": {
+    "total_antes": 395,
+    "total_depois": 395,
+    "novo_depois": 110,
+    "negocios_com_email_do_005": [20395],
+    "maior_deal_id": 20395
+  }
+}

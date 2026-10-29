@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Verificar segredos e riscos de publicação ao criar arquivo",
+      "trigger": "PostFileCreate",
+      "description": "Somente leitura: mesma checagem do hook de salvar, para arquivos novos (inclui .env criado sem estar no .gitignore).",
+      "matcher": "\\.(md|json|jsonl|txt|py|js|ts|ps1|yml|yaml|csv|html)$|(^|[\\\\/])\\.env(\\.[^\\\\/]*)?$",
+      "action": {
+        "type": "command",
+        "command": "py .kiro/scripts/verificar_publicacao.py --stdin",
+        "timeout": 20
+      }
+    }
+  ]
+}

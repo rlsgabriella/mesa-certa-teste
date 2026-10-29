@@ -1,187 +1,52 @@
-# Problemas Identificados — Teste Técnico Mesa Certa
+# Problemas identificados
 
-## 1. Objetivo
+Fonte: a mensagem de voz da gestora (transcrita em [`enunciado.md`](enunciado.md)) e o que os dados mostraram.
+Referência de tempo: segunda-feira, 12/10/2026, 08:00 (Brasília). Semana analisada: 05/10 a 11/10.
+Status em 29/10/2026. Os números vêm das [evidências](solucao/evidencias/README.md); a regra de classificação dos pedidos é uma estimativa.
 
-Documentar os problemas encontrados durante o desenvolvimento
-da integração entre os webhooks de marketing e o CRM.
+## Resumo
 
-Os problemas estão organizados por prioridade, considerando
-segurança, integridade dos dados e confiabilidade.
+| # | Problema (como ela falou) | Prioridade | Ordem | Status |
+|---|---|---|---|---|
+| P1 | Pedidos do marketing entram com erro, repetidos ou sem segurança | Crítica | 2.º | Resolvido nos caminhos testados (Workflow 01) |
+| P2 | "Pedidos que eu nunca vi chegar no CRM" | Alta | 3.º | Identificado (12 pedidos); evitar novos: Workflow 02 testado só no caminho de vincular |
+| P3 | "187 ou o número do marketing?" | Alta | 4.º | Explicado; número do marketing desconhecido |
+| P4 | "Quem está atrasando? Quem está sem retorno hoje?" | Alta | 4.º | Calculado; sem base para apontar um SDR |
+| P5 | "Como está o time" (negócios por etapa) | Média | 4.º | Calculado e validado para 12/10 |
+| P6 | Fila com suporte, fornecedor e teste | Média | 4.º | Medido (27 negócios); limpeza não feita |
+| P7 | Resumo toda segunda, sem pedir a ninguém | Média | 5.º | Cálculo e texto prontos; agendamento não comprovado |
+| P8 | Time não pode mudar o jeito de usar o CRM | Restrição | todas | Respeitada no desenho; não validada com o time |
+| P9 | "Perguntar depois e ele responder" | Baixa | não feito | Adiado |
 
-## 2. Problemas identificados
+## Ordem de resolução e por quê
 
-### P01 — Validação da assinatura HMAC
+1. **Entender os dados antes de automatizar (27 e 28/10).** Sem isso não havia como saber se 187 estava certo. Resultado: o 187 conta negócios por data de atualização, e a base mistura pedidos comerciais com suporte, fornecedor e teste.
+2. **Receber os pedidos com segurança (P1, Workflow 01).** Era o que mais podia causar dano (assinatura falsa, pedido repetido, negócio duplicado). Aprovado na execução 355 para um lead comercial.
+3. **Conciliar o que ficou pendente (P2, Workflow 02).** Aprovado na execução 356 para vincular um negócio que já existia, sem duplicar.
+4. **Apurar os números históricos (P3 a P6).** Feito sobre uma cópia do banco original e o lote do webhook, sem usar os negócios criados nos testes.
+5. **Resumo semanal (P7, Workflow 03).** Por último, porque depende dos números anteriores.
 
-**Prioridade:** Crítica
+## Detalhe
 
-**Problema:**
-É necessário verificar se os eventos recebidos realmente
-foram enviados por uma origem autorizada.
+- **P1 Entrada dos pedidos.** O formulário assina cada pedido; o Workflow 01 confere a assinatura sobre o corpo exato, responde 200 antes de falar com o CRM, grava o pedido e só cria negócio para pedido comercial. Evidência: [execução 355](solucao/evidencias/02-workflow-01/t1-005-aprovado.md).
+- **P2 Pedidos ausentes.** 12 pedidos comerciais da semana (10 pessoas) não têm negócio por e-mail nem telefone. Lista em [`respostas.md`](respostas.md). Não sabemos a causa.
+- **P3 O 187.** É o número de negócios com atualização na semana: 142 criados mais 45 antigos mexidos, 22 deles pela limpeza automática. Pedidos de demonstração do formulário: 136 (estimativa).
+- **P4 Prazo de 4 horas úteis.** 46 dos 99 negócios de pedidos comerciais foram atendidos no prazo, 16 fora, 13 vencidos sem retorno e 24 ainda dentro do prazo. Em 12/10 há 68 negócios em Novo com prazo vencido. A diferença entre SDRs não é estatisticamente comprovada e o banco não diz quem ligou.
+- **P5 Funil.** 106 Novo, 133 Contato, 43 Reunião marcada, 37 Reunião realizada, 72 Perdido (391).
+- **P6 Fila poluída.** 28 pedidos não comerciais viraram 27 negócios: suporte 8, fornecedor 5, teste 10, spam 1 e lixo provável 3.
+- **P7 Resumo.** [Cálculo validado](solucao/evidencias/04-workflow-03/validacao-resumo-semanal-2026-10-12.md) (23 de 23) e 25 testes automatizados. Um e-mail de teste enviado manualmente em 29/10 chegou ao Gmail. O envio automático toda segunda às 8h **não foi comprovado**.
+- **P8 Não mudar o CRM.** O cadastro chega ao CRM pela API e o resumo vai por e-mail; nenhuma tela do CRM muda. Não houve teste com o time.
 
-**Solução adotada:**
-Implementar validação HMAC utilizando JavaScript no n8n.
+## O que foi adiado ou não resolvido, e por quê
 
-**Dificuldade encontrada:**
-O módulo crypto estava inicialmente bloqueado no ambiente.
-
-**Resultado:**
-A validação foi executada com sucesso para um evento de teste
-(`evt_500110`). O HMAC precisa ser calculado sobre o corpo bruto
-(opção Raw Body do Webhook); calculado sobre o JSON já lido pelo
-n8n, os acentos mudam e a assinatura não bate.
-
-**Pendente:**
-Testar assinaturas inválidas e garantir a resposta HTTP adequada.
-O lote tem 3 entregas com assinatura inválida
-(`evt_500188`, `evt_500200`, `evt_500244`) para esse teste.
-
----
-
-### P02 — Duplicidade de contatos no CRM
-
-**Prioridade:** Alta
-
-**Problema:**
-O mesmo contato pode aparecer em diferentes eventos.
-
-**Solução adotada:**
-Consultar o CRM pelo e-mail antes de criar um novo negócio.
-
-**Resultado:**
-Foi possível identificar um contato já existente e evitar
-uma nova tentativa de criação nesse teste.
-
-**Limitações:**
-A verificação por e-mail ainda não garante proteção completa
-contra eventos repetidos ou processamento simultâneo.
-
----
-
-### P03 — Normalização dos dados
-
-**Prioridade:** Alta
-
-**Problema:**
-Os eventos podem conter diferenças de formatação, como
-espaços adicionais e letras maiúsculas nos e-mails.
-
-**Solução planejada:**
-Padronizar os dados antes de consultar ou atualizar o CRM.
-
-**Status:**
-Pendente de implementação e validação completa.
-
----
-
-### P04 — Falhas e instabilidade do CRM
-
-**Prioridade:** Crítica
-
-**Problema:**
-O CRM simulado pode apresentar respostas HTTP 429 e 500,
-atrasos e respostas HTTP 200 contendo indicação de erro.
-
-Algumas falhas podem ocorrer mesmo após o registro
-ter sido gravado no CRM.
-
-**Solução planejada:**
-Implementar tentativas controladas de reenvio,
-intervalos progressivos e confirmação do estado do CRM.
-
-**Status:**
-Pendente.
-
----
-
-### P05 — Idempotência dos eventos
-
-**Prioridade:** Alta
-
-**Problema:**
-O mesmo evento pode ser enviado mais de uma vez.
-
-**Solução planejada:**
-Registrar identificadores dos eventos processados
-e impedir que reenvios produzam efeitos duplicados.
-
-**Status:**
-Pendente.
-
----
-
-### P06 — Classificação dos eventos
-
-**Prioridade:** Média
-
-**Problema:**
-Nem toda mensagem recebida representa uma solicitação
-válida de demonstração.
-
-**Solução planejada:**
-Separar solicitações comerciais de mensagens de teste,
-suporte e outros eventos que não devem gerar novos negócios.
-
-**Status:**
-Pendente.
-
----
-
-### P07 — Validação da criação de contatos
-
-**Prioridade:** Alta
-
-**Problema:**
-O nó HTTP POST foi configurado, mas ainda não existe
-confirmação de uma criação bem-sucedida de ponta a ponta.
-
-**Resultado (28/10/2026):**
-O evento `evt_500110` (João Almeida) criou o negócio 20392 no CRM.
-Na consulta seguinte o CRM devolveu `total: 1` e o fluxo não
-criou outro negócio. Prints e estado do CRM em `solucao/evidencias/`.
-
-**Status:**
-Testado com 1 evento. Falta testar o lote completo.
-
-## 3. Ordem de resolução
-
-A ordem de trabalho adotada ou planejada é:
-
-1. Validar a autenticidade dos eventos.
-2. Preparar e normalizar os dados.
-3. Classificar os eventos recebidos.
-4. Evitar duplicidades.
-5. Criar ou atualizar os registros necessários.
-6. Tratar falhas e reenvios.
-7. Confirmar os resultados diretamente no CRM.
-8. Registrar evidências da execução final.
-
-Essa ordem poderá ser ajustada conforme os testes.
-
-## 4. Decisões de escopo
-
-Até o momento, não há uma decisão definitiva de excluir
-algum requisito identificado.
-
-Funcionalidades ainda não implementadas estão registradas
-como pendentes, e não como descartadas.
-
-Caso alguma alternativa seja rejeitada, serão documentados
-o motivo, o impacto e a decisão correspondente.
-
-## 5. Critérios para considerar a solução concluída
-
-A solução deverá demonstrar:
-
-- Validação correta de eventos legítimos e inválidos.
-- Tratamento adequado de contatos existentes.
-- Criação correta de novos registros.
-- Proteção contra processamento duplicado.
-- Tratamento das falhas simuladas pelo CRM.
-- Evidências verificáveis do estado final do CRM.
-
-## 6. Estado atual
-
-Documento inicial baseado nos problemas encontrados
-durante o desenvolvimento.
-
-Será atualizado conforme novas validações forem realizadas.
+| Item | Motivo |
+|---|---|
+| Assistente que responde perguntas (P9) | O enunciado a trata como desejo; priorizei números confiáveis e o resumo. |
+| Criar no CRM os 12 pedidos ausentes | Criar negócio sem confirmar a causa pode duplicar; decisão da gestora. |
+| Limpar os 27 negócios não comerciais e reclassificar os 104 pedidos antigos | Mexer no CRM e no histórico exige autorização; só medi. |
+| Dizer quem atrasa | Sem base: amostra pequena e autoria do contato desconhecida. |
+| Feriados no prazo | Sem regra informada (pergunta 1 em [`suposicoes.md`](suposicoes.md)). |
+| Atualizar a cópia SQLite do CRM | Nenhum processo faz isso; é pré-requisito para relatórios operacionais atuais. |
+| Agendar o Workflow 02 | O gatilho é manual; a conciliação ainda não é automática. |
+| Validar a classificação de pedidos com pessoas | Regra por texto, sem revisão humana. |
+| Cenários não executados | Suporte, reenvio do mesmo pedido, assinatura inválida, falhas do CRM, criação por conciliação e lote completo. |

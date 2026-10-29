@@ -1,20 +1,34 @@
 # Workflows n8n
 
-Esta pasta recebe os workflows exportados do n8n (menu do workflow → Download).
+Esta pasta tem os exports **finais** dos workflows, lidos da instância n8n em
+29/10/2026. Os JSON contêm só referências a credenciais (nome e id), sem valores.
 
-| Arquivo | Situação em 29/10/2026 |
-|---|---|
-| `Mesa Certa _ 01 - Recebimento e Cadastro de Leads.json` | Exportado. Recebe o webhook, valida HMAC, classifica, persiste (`pedidos_formulario` + `sync_eventos`), responde 200/401 e cria no CRM só se comercial. Teste de ponta a ponta com 1 evento real (`sync_eventos` tem 3 negócios `sincronizado`, deal_id 20392–20394). Falta testar o lote completo e os casos suporte/duplicado no estado corrigido. |
-| `Mesa Certa_02-Conciliação Marketing × CRM.json` | Exportado e corrigido (ver `backup/`). Busca pendentes comerciais, GET antes de POST, trata erro ambíguo com re-GET, atualiza `sync_eventos`. **Ainda não testado após as correções.** |
-| `03 - Indicadores e SLA` | Não iniciado. |
-| `04 - Resumo semanal` | Não iniciado. |
+| Arquivo | Versão exportada | Situação |
+|---|---|---|
+| `wf01-recebimento-cadastro-leads.json` | id `bZu7Ku16BbgSj504`, `versionId 3c85f463-…`, 18 nós | Recebe o webhook, valida HMAC, classifica, persiste (`pedidos_formulario` + `sync_eventos`), responde 200/401 e cria no CRM só se comercial. **Aprovado** no T1.005 (execução 355, success). |
+| `wf02-conciliacao-marketing-crm.json` | id `fcMKsKzpcdAMKnr0`, `versionId 63d1f2b0-…`, 12 nós | Busca pendentes comerciais, consulta o CRM por e-mail antes de criar, atualiza `sync_eventos` para `sincronizado`. **Aprovado** na execução 356 (success). |
+| `wf03-resumo-semanal.json` | importado como `wrGCERjaPYAeDcuH`, 11 nós | Resumo semanal da gestora: Schedule Trigger `0 8 * * 1` → serviço local de indicadores → resumo → e-mail (só com destinatário) ou registro; falhas ficam registradas. **Execuções manuais 357 e 359 com sucesso (e-mail aceito pelo SMTP); agendamento não observado.** A cópia importada **não tem o fuso `America/Sao_Paulo`** que este arquivo traz em `settings`: sem ele, o n8n usa o fuso da instância (`America/New_York`, visto na execução 360). Ver `../scripts/README.md`. |
 
-Backups das versões anteriores à correção de 29/10 estão em `backup/`.
+**Observação sobre o WF01 exportado:** a execução 355 rodou na versão `88e7d88f-…` (22 nós).
+Logo depois, os 4 nós SQLite antigos (`CUSTOM.sqliteNode`), que estavam desconectados,
+foram removidos no editor (versão exportada, 18 nós). Comparação feita entre as duas
+versões: só essas 4 remoções; nenhum nó, parâmetro ou conexão do caminho executado mudou.
+A versão de 18 nós em si não foi executada.
+
+Versões anteriores, backups e as cópias de importação ficam na pasta de
+desenvolvimento fora do pacote (`mesa-certa-teste-dev/workflows/`).
+
+Resultado comprovado das execuções: `../evidencias/02-workflow-01/t1-005-aprovado.md` (355) e
+`../evidencias/03-workflow-02/wf02-execucao-356.md` (356). Índice completo: `../evidencias/README.md`.
 
 Antes de exportar qualquer workflow, confira `../configuracoes/README.md`:
 o JSON exportado não pode conter o segredo do HMAC nem o token do CRM.
 
-### Correções aplicadas em 29/10/2026 (edição direta do JSON, via Kiro)
+### Histórico das correções de 29/10/2026 (resumo; os JSON de cada etapa estão na pasta de desenvolvimento)
+
+> Esta seção descreve as correções feitas antes do export final. Itens que dizem
+> `CUSTOM.sqliteNode` ou `ja_no_crm` foram **superados**: os exports finais usam
+> `n8n-nodes-sqlite3.sqliteNode` e o WF02 grava `sincronizado`.
 
 Workflow 01:
 - Campo `"=nome"` do POST ao CRM corrigido para `"nome"` (o `=` sobrando
@@ -158,7 +172,7 @@ telefone normalizados e separar em:
 
 A regra de cruzamento muda o resultado: só por e-mail dá 21 sem correspondência;
 por e-mail ou telefone dá 19 (`evt_500148` e `evt_500190` só batem pelo telefone).
-Ver `../evidencias/auditoria-2026-10-28.md`.
+Ver `../evidencias/01-auditoria/auditoria-2026-10-28.md`.
 
 ### R8. Indicadores comerciais (workflows 03 e 04)
 
@@ -185,14 +199,13 @@ Nenhum cálculo de SLA ou de resumo semanal existia no Python: os workflows 03 e
 
 ---
 
-## Como importar as versões corrigidas sem sobrescrever o que está rodando
+## Como importar os exports finais sem sobrescrever o que está rodando
 
-Os JSONs corrigidos mantêm o mesmo `id` dos workflows originais
-(`bZu7Ku16BbgSj504` no 01, `tTDsv01lkDZqTnp1` no 02). Se você importar por cima,
-o n8n pode substituir o workflow em edição. Para revisar antes de adotar:
+Os exports mantêm o `id` da instância onde foram gerados (`bZu7Ku16BbgSj504` no WF01,
+`fcMKsKzpcdAMKnr0` no WF02). Importe como workflow novo. Para revisar antes de adotar:
 
 1. No n8n, crie um workflow novo (não abra o que está em uso).
-2. Menu → **Import from File** e escolha o JSON corrigido desta pasta.
+2. Menu → **Import from File** e escolha o JSON desta pasta.
 3. O workflow entra como uma cópia nova (o n8n gera outro id interno ao criar
    via tela). Revise nó a nó e rode os testes.
 4. Só depois de validar, substitua o workflow antigo (ou renomeie o antigo
@@ -203,12 +216,14 @@ o n8n pode substituir o workflow em edição. Para revisar antes de adotar:
    criados; em outra instância, selecione as credenciais equivalentes na mão.
 
 Pré-requisitos de ambiente (iguais aos atuais):
-- Variável `MESA_CERTA_HMAC_SECRET` definida no processo do n8n e
-  `N8N_BLOCK_ENV_ACCESS_IN_NODE=false` (ver `../configuracoes/README.md`).
+- Variáveis `MESA_CERTA_HMAC_SECRET`, `N8N_BLOCK_ENV_ACCESS_IN_NODE=false` e
+  `NODE_FUNCTION_ALLOW_BUILTIN=crypto` definidas no processo do n8n
+  (ver `../configuracoes/README.md`).
 - CRM mock no ar em `http://127.0.0.1:8001`.
-- Nó SQLite custom instalado (os workflows usam `CUSTOM.sqliteNode`).
+- Pacote comunitário `n8n-nodes-sqlite3` instalado (os workflows usam
+  `n8n-nodes-sqlite3.sqliteNode`).
 
-> Nota: as correções foram feitas por edição direta do JSON e validadas por
-> leitura estrutural. **Não foram executadas no n8n** nesta etapa — o teste de
-> ponta a ponta (comercial cria / suporte não cria / reconciliação) ainda
-> precisa rodar na sua instância.
+> Nota: foram executados e aprovados o T1.005 do WF01 (execução 355) e a conciliação
+> do WF02 (execução 356). **Ainda sem execução**: suporte/não comercial, reenvio do
+> mesmo `event_id`, assinatura inválida (HTTP 401), o ramo em que o WF02 cria o
+> negócio por POST, falhas 429/500 do CRM e o lote completo.

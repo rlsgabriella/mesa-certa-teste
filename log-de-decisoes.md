@@ -1,204 +1,94 @@
-# Log de Decisões — Desafio Mesa Certa
-
-Este documento registra as principais decisões técnicas e de negócio tomadas durante o desenvolvimento da solução Mesa Certa, incluindo o uso de assistentes de IA, as alternativas consideradas e os resultados obtidos.
-
-## 27/10/2026 — Diagnóstico inicial
-
-**Decisão:** começar pela análise dos dados antes de implementar automações.
-
-Foram examinados o banco SQLite, o histórico de etapas do CRM, os eventos enviados pelo marketing e a documentação da API.
-
-O diagnóstico identificou divergências entre as fontes, eventos duplicados, pedidos sem correspondência identificada no CRM e registros que exigiam classificação entre oportunidades comerciais e solicitações não comerciais.
-
-A análise também mostrou que contar negócios pela data de atualização não equivale a contar pedidos de demonstração recebidos na semana.
-
-**Uso da IA:** apoio na exploração dos dados, elaboração das consultas e identificação de possíveis causas das divergências.
-
-**Resultado:** diagnóstico preliminar concluído. A conciliação definitiva e os números para a gestora ainda precisam ser validados.
-
-## 27/10/2026 — Escolha inicial da arquitetura
-
-**Decisão inicial:** desenvolver a integração utilizando Python e SQLite, com comunicação pela API REST do CRM.
-
-A abordagem permitiria implementar validação de webhooks, tratamento de duplicidades e sincronização com o CRM.
-
-Foram criados componentes de integração e executados testes automatizados, que passaram na versão inicial.
-
-**Uso da IA:** apoio na estruturação do código e na elaboração dos testes.
-
-**Resultado:** a abordagem foi tecnicamente explorada, mas posteriormente substituída como solução principal.
-
-## 28/10/2026 — Migração de Python para n8n
-
-**Decisão:** utilizar o n8n como ferramenta principal de automação.
-
-**Justificativa:** facilitar a visualização dos processos, a manutenção dos fluxos e a explicação da solução durante a avaliação técnica.
-
-A implementação anterior em Python foi arquivada fora do repositório. O Python foi mantido apenas onde necessário para executar as ferramentas fornecidas pelo desafio, como o CRM mock.
-
-**Alternativa descartada:** manter uma integração própria em Python como solução principal, por exigir mais código e manutenção para o escopo proposto.
-
-**Uso da IA:** apoio na comparação das alternativas, organização do repositório e preservação dos arquivos originais.
-
-## 28/10/2026 — Preservação dos dados e evidências
-
-**Decisão:** trabalhar com cópias dos dados e preservar evidências das alterações realizadas no CRM.
-
-Os arquivos originais foram conferidos, a estrutura do repositório foi reorganizada e foram mantidos registros do negócio de teste criado durante a integração.
-
-**Justificativa:** permitir a reprodução dos testes sem comprometer os dados originais.
-
-**Resultado:** estrutura preparada para armazenar workflows, configurações e evidências.
-
-## 28/10/2026 — Implementação do Workflow 01
-
-**Decisão:** iniciar pela automação de recebimento e cadastro de leads do marketing.
-
-O workflow foi estruturado para receber eventos por webhook, validar assinaturas HMAC, preparar os dados, consultar o CRM e registrar pedidos no SQLite.
-
-Foram implementadas consultas por `event_id` para identificar eventos já registrados e evitar inserções repetidas na tabela de pedidos.
-
-**Resultado dos testes:** um evento de teste foi registrado no SQLite e uma nova consulta identificou corretamente sua existência.
-
-**Limitação:** a prevenção de duplicidade no CRM ainda não está garantida, pois a verificação no SQLite e a integração com o CRM precisam ser encadeadas corretamente.
-
-## 28/10/2026 — Segurança das credenciais
-
-**Decisão:** não armazenar tokens de autenticação ou o segredo HMAC diretamente nos nós exportados do n8n.
-
-O token do CRM passou a ser utilizado por meio de credenciais Header Auth, compartilhadas entre os nós GET e POST.
-
-A validação HMAC passou a utilizar a variável de ambiente `MESA_CERTA_HMAC_SECRET`.
-
-**Uso da IA:** apoio na configuração e revisão das credenciais.
-
-**Verificação:** o Kiro realizou auditorias do JSON exportado. A auditoria mais recente não encontrou tokens nem segredos expostos e confirmou a referência correta à variável HMAC.
-
-**Resultado:** correção de exposição de credenciais concluída no arquivo auditado.
-
-## 28/10/2026 — Revisão da confiabilidade da integração
-
-**Decisão:** não considerar o Workflow 01 finalizado apenas porque os testes iniciais passaram.
-
-A auditoria identificou duas correções essenciais:
-
-- Retornar HTTP 401 quando a assinatura do webhook for inválida.
-- Garantir que eventos duplicados não possam gerar novos negócios no CRM.
-
-Também foram identificados tratamentos necessários para falhas e respostas inesperadas da API.
-
-**Uso da IA:** o Kiro foi utilizado para inspecionar o workflow exportado e identificar riscos que não haviam sido cobertos pelos testes iniciais.
-
-**Decisão aceita:** corrigir a sequência dos nós e os tratamentos de erro antes da validação final.
-
-**Resultado:** problemas identificados e documentados; implementação pendente.
-
-## 28/10/2026 — Planejamento das próximas automações
-
-**Decisão:** priorizar os resultados solicitados pela gestora, sem criar workflows desnecessários.
-
-A solução deverá contemplar o acompanhamento do funil comercial, a conciliação dos pedidos de demonstração, a identificação de atrasos no primeiro contato, os pedidos ausentes no CRM e o resumo semanal automático.
-
-O Workflow 02 foi iniciado para consultas e indicadores no SQLite, mas ainda não foi concluído.
-
-**Alternativa adiada:** implementar um assistente conversacional para responder perguntas da gestora. A prioridade será entregar primeiro indicadores confiáveis e um resumo semanal automatizado.
-
-**Justificativa:** concentrar o esforço nas funcionalidades obrigatórias e manter a solução simples de operar.
-
-## 29/10/2026 — Exportação e correção técnica dos Workflows 01 e 02
-
-**Decisão:** corrigir defeitos nos JSONs exportados dos dois workflows antes de seguir para a documentação, com cópia de backup das versões anteriores em `solucao/workflows/backup/`.
-
-**Verificação (via leitura dos JSONs e do banco, somente leitura):**
-- Os dois workflows já estavam exportados em `solucao/workflows/`.
-- Nenhum segredo/token/Bearer exposto nos JSONs (credenciais por referência).
-- Banco: `pedidos_formulario` com coluna `classificacao` e 104 linhas, **todas `nao_classificado`**; `sync_eventos` com 3 eventos `sincronizado` (deal_id 20392–20394).
-
-**Correções aplicadas (edição direta do JSON):**
-- WF01: corrigido campo `"=nome"` → `"nome"` no POST ao CRM; removido `pinData` de teste. Confirmado que `Classificar Pedido` roda antes do INSERT e que a `classificacao` é persistida.
-- WF02: removido `event_id` fixo de teste; `Vincular Negócio Existente` virou `UPDATE` (estado `ja_no_crm`); nós SQLite padronizados para `CUSTOM.sqliteNode`; completados os dois ramos do IF "Negócio criado após erro?" com dois nós novos (`sincronizado` / `falha`); corrigido e-mail do GET inicial.
-
-**Sugestão da IA (Kiro) aceita:** padronizar o tipo de nó SQLite e persistir a classificação, pois sem isso o filtro `classificacao='comercial'` do WF02 nunca encontraria leads (todas as linhas estão `nao_classificado`).
-
-**Limitação conhecida / não comprovado:** as correções foram validadas por **leitura estrutural**, não por execução. O terminal estava indisponível nesta sessão e o webhook de teste do n8n precisa ser armado manualmente. Logo, **não há evidência de execução** das versões corrigidas. Os 104 registros antigos seguem `nao_classificado` (decisão de não reclassificar automaticamente).
-
-## 29/10/2026 — Verificação via MCP e preparo das versões corrigidas (sem aplicar)
-
-**Contexto:** conectado o MCP `n8n-mcp` à instância local (após habilitar `WEBHOOK_SECURITY_MODE=moderate` e a Public API do n8n). Leitura dos dois workflows na instância confirmou o estado real.
-
-**Fatos confirmados por leitura (MCP):**
-- WF01 (`bZu7Ku16BbgSj504`, 18 nós): ordem correta e `classificacao` já persistida no INSERT. **Dois defeitos reais:** campo `"=nome"` no POST ao CRM e `pinData` de teste ativo em "Preparar Dados do Lead" (`teste-suporte-real-005`, mensagem de suporte), que faz toda execução ignorar o webhook real.
-- WF02 (`tTDsv01lkDZqTnp1`, 10 nós): `Vincular Negócio Existente` ainda com `SELECT` e `event_id` fixo; faltam os dois nós do ramo de erro; GET inicial com espaço no e-mail.
-- Credenciais por referência coincidem entre repo e instância (CRM `rmoFJ2XC21kBrCVT`, SQLite `A6Zo3HG9VmdtVFOr`).
-
-**Correção de decisão anterior (tipos de nó SQLite):** na auditoria anterior eu havia padronizado tudo para `CUSTOM.sqliteNode`. A leitura da instância mostrou que **os dois tipos coexistem e já executaram** (`n8n-nodes-sqlite3.sqliteNode` nos nós de UPDATE do WF02; `CUSTOM.sqliteNode` nos demais). Além disso, os dois tipos usam **formatos diferentes de `queryReplacement`**: `CUSTOM` usa array (`={{ [a, b] }}`), enquanto `n8n-nodes-sqlite3` usa string separada por vírgula (`={{ a }},{{ b }}`), formato que já roda na instância. **Decisão revista:** preservar o tipo original de cada nó e o formato de parâmetro correspondente, em vez de padronizar. A versão do repo que havia padronizado foi substituída por uma preparada em `solucao/workflows/corrigidos/`.
-
-**Preparado (não aplicado na instância):**
-- `solucao/workflows/corrigidos/Mesa Certa _ 01 ...corrigido.json`: `"=nome"`→`"nome"`, `pinData` removido.
-- `solucao/workflows/corrigidos/Mesa Certa_02-Conciliacao Marketing x CRM.corrigido.json`: `Vincular` vira UPDATE `ja_no_crm` (tipo `n8n-nodes-sqlite3`, parâmetro string vírgula), event_id dinâmico, GET corrigido, + 2 nós de erro (`sincronizado`/`falha`) com conexões do IF.
-- Backups das versões exportadas em `solucao/workflows/backup/`.
-
-**Uso da IA (Kiro):** leitura e comparação via MCP, preparo dos JSONs e validação estrutural.
-
-**Limitação:** validação apenas estrutural (leitura). **Não executado** na instância; nada importado. Pendente de autorização para aplicar e testar.
-
-## 29/10/2026 — Correção pontual aplicada ao Workflow 01 (instância n8n)
-
-**Decisão:** aplicar manualmente no editor do n8n as duas correções pontuais do WF01 (`bZu7Ku16BbgSj504`), já que o MCP `n8n-mesa-certa` está em modo somente leitura (as ferramentas de escrita `n8n_update_partial_workflow`/`update_full` não foram expostas). Evitou-se substituir o workflow inteiro.
-
-**Alterações (feitas pela usuária no editor, salvas):**
-1. Removido o `pinData` de teste do nó "Preparar Dados do Lead" (era `teste-suporte-real-005`, mensagem de suporte). Agora `pinData: {}` — o workflow volta a processar os dados do webhook.
-2. No nó "Criar Negócio no CRM", a chave do 1º body parameter passou de `"=nome"` para `"nome"` (modo Fixed).
-
-**Verificação (Kiro, via MCP n8n_get_workflow mode=full):** confirmadas as duas: `pinData: {}` e `name: "nome"`. `versionCounter` 376, `updatedAt` 2026-10-29T04:38:30. Nenhum outro nó/conexão/credencial alterado.
-
-**Backup:** estado anterior (com pin e `=nome`) salvo em `solucao/workflows/backup/Mesa Certa _ 01 - instancia-antes-correcao-pontual.bkp.json`.
-
-**Uso da IA (Kiro):** diagnóstico, leitura e verificação via MCP; a edição foi manual.
-
-**Limitação:** correção confirmada estruturalmente, **não validada por execução**. O teste de ponta a ponta (comercial cria / suporte não cria / idempotência) ainda não foi rodado.
-
-## 29/10/2026 — T1 (lead comercial, HMAC válida): NÃO APROVADO
-
-**Objetivo do T1:** comprovar de ponta a ponta que um lead comercial com assinatura válida é classificado como `comercial` e gera negócio no CRM.
-
-**Disparo:** evento `evt_t1_comercial_001`, e-mail `carla.comercial.t1@exemplo.com.br`, mensagem "Quero uma demonstracao do sistema de voces", enviado ao endpoint de teste `/webhook-test/mesa-certa/marketing` (workflow não ativo). Baseline do CRM antes: total 394 / Novo 109 / Contato 133 / Reunião marcada 43 / Reunião realizada 37 / Perdido 72.
-
-**Resultado:** execução n8n id 351 terminou `success`, mas o nó "Validar Assinatura HMAC" retornou `assinatura_valida: false` → fluxo seguiu para o ramo **HTTP 401** ("Rejeitar Assinatura Inválida"). Os nós Classificar / Pedido é comercial / Criar Negócio **não executaram**. **Nenhum negócio foi criado no CRM** (permanece 394 / Novo 109).
-
-**Verificação da causa (prova):**
-- O corpo bruto recebido pelo n8n (279 bytes, lido do binário da execução) é idêntico ao enviado pelo script — sem reserialização.
-- Recalculado o HMAC-SHA256 desse corpo com o segredo `<SEGREDO_HMAC_DO_DESAFIO>`: o hash resultante é **igual** ao `X-Signature` enviado pelo script. Ou seja, a assinatura do cliente está correta para esse segredo.
-- Conclusão: a divergência está no **segredo efetivo carregado pelo processo do n8n** (`$env.MESA_CERTA_HMAC_SECRET`), que não corresponde a `<SEGREDO_HMAC_DO_DESAFIO>`. Consistente com a divergência de fingerprints observada antes entre ambientes.
-
-**Status:** T1 **NÃO APROVADO** (bloqueado por configuração do segredo no processo n8n). Não é defeito do workflow nem do script de teste.
-
-**Pendência:** alinhar `MESA_CERTA_HMAC_SECRET` no processo do n8n ao valor do desafio e reexecutar o T1. Reinício do n8n e novos testes aguardam autorização.
-
-**Uso da IA (Kiro):** leitura da execução via MCP, decodificação do corpo e recálculo do HMAC para localizar a causa.
-
-## Estado atual e próximos passos
-
-**Concluído ou validado parcialmente:**
-- Diagnóstico inicial dos dados.
-- Definição do n8n como ferramenta principal.
-- Preservação dos arquivos e evidências.
-- Estrutura inicial da integração Marketing → CRM.
-- Teste de registro e identificação de evento repetido no SQLite.
-- Auditoria de credenciais do JSON exportado.
-
-**Implementado no JSON, falta comprovar por execução:**
-- Resposta HTTP 401 para assinatura inválida (nó dedicado no WF01).
-- Resposta HTTP 200 após persistir, antes das chamadas ao CRM.
-- Classificação do pedido e bloqueio de não comerciais no caminho do CRM.
-- Reconciliação do WF02 (GET antes de POST, re-GET após erro, atualização de estado).
-
-**Pendente:**
-- Executar e comprovar os workflows 01 e 02 corrigidos (teste de ponta a ponta: comercial cria / suporte não cria / reconciliação).
-- Concluir a conciliação e validar os números apresentados à gestora.
-- Finalizar os indicadores comerciais e a análise do SLA de atendimento.
-- Implementar o resumo semanal automático.
-- Validar o estado final do CRM e registrar evidências do lote completo.
-- Concluir a documentação obrigatória e o pacote do assistente de IA.
-
-**Critério para conclusão:** a solução deverá funcionar de forma reproduzível, sem exposição de credenciais, sem exigir mudanças na rotina do time comercial e com resultados comprovados pelos dados e pelo estado final do CRM.
+# Log de decisões: Mesa Certa
+
+Horários em Brasília (UTC-3). As execuções do n8n vêm em UTC e estão convertidas. Esta versão resume o log original de
+27 a 29/10/2026; a cópia integral anterior fica fora do pacote (`mesa-certa-teste-dev/log-de-decisoes.bkp-2026-10-29-pre-reescrita.md`).
+Valores de segredos não aparecem aqui.
+
+## Uso de IA e de ações manuais
+
+- **Kiro** (assistente no editor): implementação de scripts e JSON, inspeção (workflows, banco e CRM por MCP somente leitura), testes, validações e documentação. Enviou os eventos de teste com `solucao/testar_webhook_hmac.py`, quando autorizado.
+- **ChatGPT**: apoio ao planejamento, ao entendimento técnico e à revisão de alternativas. 
+- **Ações manuais, sem IA:** edições no editor do n8n, reinícios do n8n com variáveis de ambiente, importação do WF02 v2, clique em "Execute workflow" do WF02, envio do e-mail de teste do WF03, publicação no GitHub e a retirada de três prints.
+- Legenda das sugestões: **[aceita]**, **[rejeitada]**, **[revisada após teste]**.
+
+## 27/10: diagnóstico e primeira arquitetura
+
+- Decisão: analisar os dados antes de automatizar (banco, histórico de etapas, lote do webhook e documentação). Achados: divergência entre fontes, eventos repetidos, pedidos sem negócio e mistura de pedidos comerciais com suporte, fornecedor e teste. Contar negócios por data de atualização não é contar pedidos.
+- Arquitetura inicial em Python + SQLite (receptor, worker de sincronização, 22 testes). **[revisada]** no dia seguinte.
+
+## 28/10: n8n, segurança e primeira prova
+
+- **Migração para n8n [aceita]:** fluxos visíveis e fáceis de explicar na avaliação. O Python antigo foi arquivado fora do repositório; sobrou só o necessário ao CRM mock e ao remetente do desafio.
+- **00:33** primeiro teste ponta a ponta (`evt_500110`): criou o negócio 20392; a consulta seguinte o encontrou e não criou outro.
+- **00:59 a 01:10** auditoria de dados e do repositório, só leitura, separando números confirmados de hipóteses.
+- **Segurança [aceita]:** token do CRM em credencial Header Auth; segredo HMAC em variável `MESA_CERTA_HMAC_SECRET`; HMAC calculado sobre o corpo bruto (Raw Body).
+- **Revisão de confiabilidade:** o WF01 não foi dado como pronto só porque o primeiro teste passou. Exigidos: HTTP 401 para assinatura inválida, resposta 200 antes das chamadas ao CRM e idempotência por `event_id`.
+- **[rejeitada, adiada]** assistente conversacional para a gestora: prioridade para indicadores confiáveis e resumo semanal.
+
+## 29/10: correções, testes e Workflow 02
+
+- **01:38** correção manual no WF01: removido o `pinData` de teste e corrigida a chave `"=nome"` para `"nome"`. O Kiro confirmou por leitura.
+- **01:42** T1 (execução 351): **reprovado**. O processo do n8n usava um segredo diferente do cliente; o Kiro recalculou o HMAC do corpo bruto e a assinatura do cliente estava correta. Não era defeito do workflow.
+- **01:52** commit `2c3ef90` enviado ao GitHub (contém o segredo de teste do desafio; ver riscos).
+- **10:44 e 10:57** n8n reiniciado manualmente: primeiro com `MESA_CERTA_HMAC_SECRET` e `N8N_BLOCK_ENV_ACCESS_IN_NODE=false`; depois, com `NODE_FUNCTION_ALLOW_BUILTIN=crypto` acrescentada (ver a falha de `crypto` abaixo).
+- **10:55, 11:00 e 11:14** execuções 352 a 354 falharam: `Module 'crypto' is disallowed` e duas vezes `WorkflowHasIssuesError`, sem executar nó algum. A causa exata não foi comprovada; a hipótese foi o tipo `CUSTOM.sqliteNode`.
+- **11:18** troca manual dos 4 nós SQLite por `n8n-nodes-sqlite3.sqliteNode`. **[revisada após teste]** a padronização anterior para `CUSTOM.sqliteNode`, sugerida pelo Kiro em análise só estrutural.
+- **11:33 execução 355: T1.005 aprovado** (UTC 14:33:02). Caminho executado: HMAC válido, classificação `comercial`, gravação no SQLite, resposta 200 e criação do negócio 20395. CRM de 394 para 395; `sync_eventos` ficou `pendente`. Foi **um** evento comercial. Logo depois (11:33:29) os 4 nós antigos e desconectados foram removidos manualmente; a versão exportada (18 nós) não foi executada.
+- **WF02 [revisada após teste]:** o UPDATE de "Vincular Negócio Existente" passou de `ja_no_crm` para `sincronizado`, e o nó "Buscar Leads Pendentes" trocou `CUSTOM.sqliteNode` por `n8n-nodes-sqlite3.sqliteNode`. Cópia "corrigido v2" importada manualmente às 12:18.
+- **13:17 execução 356: WF02 aprovado** (UTC 16:17:07), **só no caminho "negócio já existe"**: localizou o 20395 pelo e-mail e marcou o evento 005 como `sincronizado` com `deal_id` 20395. CRM continuou com 395. Os ramos de criação por POST e de erro não rodaram.
+- **13:29** organização do repositório: exports finais do WF01 e do WF02 lidos da instância; segredo HMAC trocado por placeholder em `webhook/README.md` e removido deste log; backups e versões antigas movidos para `mesa-certa-teste-dev/`; `enunciado.md` copiado para a raiz.
+
+## 29/10: análise histórica e Workflow 03
+
+- **Análise dos dados (referência 12/10/2026 08:00):** funil 391 (106 Novo, 133 Contato, 43 Reunião marcada, 37 Reunião realizada, 72 Perdido). O 187 da planilha é contagem por data de atualização (142 criados mais 45 antigos). 175 pedidos distintos no lote, 136 comerciais, 12 sem correspondência no CRM, 68 sem contato com prazo de 4 h úteis vencido. Nenhuma culpa atribuída a SDR: diferença não significativa e autor do contato desconhecido. Negócios dos testes de 28 e 29/10 não entraram nos indicadores históricos.
+- **14:00** WF03 preparado: `solucao/scripts/resumo_semanal.py` (somente leitura), 25 testes, validação histórica e `wf03-resumo-semanal.json`.
+- **Validação [aprovada]:** 23 de 23 indicadores conferem com a apuração histórica, sem ajustes. Única diferença de definição: mediana de 2,08 h úteis contra 2,15 antes.
+- **[rejeitada]** reativar o nó Execute Command (desativado no n8n 2.x) e **[rejeitada]** refazer os cálculos em Code nodes. **[aceita]** serviço HTTP local, só leitura, em `127.0.0.1:8002`.
+- **[revisada após teste]** acrescentado o aviso "banco desatualizado", depois de ver que o banco de trabalho mostrava 391 negócios com o CRM em 395. A resposta a referência inválida passou de 500 para 400 sem novo teste manual.
+- **14:53 e-mail manual do resumo, recebimento confirmado pelo Gmail** (print). O print não mostra ID de execução do n8n nem o corpo completo, então não prova que o envio saiu do agendamento nem do workflow importado.
+
+## 29/10: evidências
+
+- **15:06** `solucao/evidencias/` reorganizada em cinco subpastas (`01-auditoria`, `02-workflow-01`, `03-workflow-02`, `04-workflow-03`, `05-testes-banco`) com índice e limitações de cada prova; referências de caminho atualizadas.
+- **Até 15:21** (horário deste registro) três prints do WF01 (`get.png`, `post.png`, `lead.png`) foram **retirados manualmente** por conterem informações que não serão publicadas. **Decisão: manter evidências textuais e estruturadas** (relatórios `.md` e `.json` das execuções 355 e 356, estado final do CRM, validação histórica do WF03). Os prints não eram obrigatórios; as imagens não foram recriadas e os links foram removidos.
+- Resta `email-evidencia.png`, com dado pessoal (ver riscos). **Depois:** a autora retirou esse print manualmente (horário não registrado); referências ainda a atualizar.
+- **Revisão do histórico git (Kiro, somente leitura):** um commit publicado (`2c3ef90`); o segredo HMAC de teste está nele em `log-de-decisoes.md` e `webhook/README.md`, e o token de teste do CRM em `crm-mock.py`; `.env` fora do histórico. Consulta anônima à página do repositório deu 404 e o Kiro leu isso como "privado"; **[revisada]** a autora informou que o repositório é **público**, então o segredo ficou exposto desde o push. **Sugestão do Kiro:** não reescrever o histórico. **[rejeitada]** pela autora, que pediu a limpeza.
+- **Reescrita local do commit (Kiro, a pedido da autora):** backup em bundle fora do pacote; commit raiz refeito (`2c3ef90` para `6227691`) com o segredo HMAC trocado por placeholder em `log-de-decisoes.md` e `webhook/README.md` e sem os três prints do WF01. Conferido: nenhum resultado para o segredo no histórico do `main`, `git fsck` sem erros, `.env` fora do commit. O token do CRM segue em `crm-mock.py`. **Publicado após autorização expressa da autora:** `git push --force-with-lease` (`2c3ef90` para `6227691`). Conferido no remoto depois do `fetch`: sem o segredo no histórico e na árvore, sem imagens. O commit antigo pode seguir acessível pelo hash no GitHub e em cópias de terceiros.
+
+## 29/10: pacote do assistente de IA (Kiro)
+
+- **15:52** criado em `.kiro/` pelo Kiro, a pedido da autora, para cumprir o item do enunciado. Descrição, uso e validação em `.kiro/README.md`.
+- **Instruções persistentes [aceita]:** `.kiro/steering/mesa-certa-projeto.md` com `inclusion: always` (segurança, preservação de dados, qualidade das evidências, validação de indicadores, limitações, IA x decisão humana). O Kiro as injetou como regra do workspace. **[rejeitada]** duplicar em `AGENTS.md`: o Kiro também o aceita, mas manter dois arquivos geraria divergência.
+- **Skill [aceita]:** `.kiro/skills/auditoria-workflow-crm/` (`SKILL.md`, checklist, modelo de relatório e `scripts/inspecionar_workflow.py`, inspetor estático e somente leitura do JSON de workflows n8n). Na leitura dos três workflows: WF01 com 0 alertas e 2 avisos (criação do negócio sem retry; nó Code usa `$env` e `console.log`); WF02 com aviso de gatilho manual; WF03 sem alertas.
+- **Hooks [aceita]:** `PostFileSave` e `PostFileCreate` executam `.kiro/scripts/verificar_publicacao.py`, que procura segredos e dados pessoais e só avisa (nunca bloqueia, altera ou apaga; não imprime valores). **[rejeitada]** hook `Stop` (um código de saída diferente de zero força outro turno do agente) e hook destrutivo ou que corrige sozinho; **[rejeitada]** `PreToolUse` por poder bloquear o trabalho.
+- **Validação:** scripts compilam; `--autoteste` com 12 verificações aprovado; hook simulado com eventos sintéticos (arquivo com segredo: alerta sem exibir o valor; arquivo limpo: sem alerta; hashes inalterados); varredura `--git`: 43 arquivos, 0 alertas, 2 avisos (`mesa_certa.db` e `email-evidencia.png`).
+- **Limitações:** o Kiro informou que os hooks passam a valer na próxima sessão; o disparo automático real **ainda não foi observado** (só simulado) e os gatilhos de arquivo valem para alterações do agente, não para edição manual. A skill ainda não foi acionada em uma conversa. A detecção é por padrão e por valor; imagens e bancos não são lidos. O comando `py` é do Windows. Pasta `.kiro/` ainda não versionada (decisão de commit é da autora).
+
+## 29/10: teste do agendamento do WF03
+
+- **Execuções vistas no n8n (Kiro, leitura):** 357 (14:53:13, sucesso, "Enviar e-mail" aceito pelo SMTP; coincide com o e-mail de teste das 14:53), 358 (14:56, cancelada), 359 (16:19:37, sucesso, e-mail aceito) e 360 (16:19:52, só o gatilho). Todas em modo `manual`. Isso substitui a limitação anterior ("importação não documentada"); o destinatário não é registrado aqui.
+- **Teste de 16:20 (autora):** a autora ajustou o cron para `0 20 16 * * *` e publicou, mas **não houve execução agendada**. Às 16:27 o n8n mostrava o workflow com `active: false`, sem versão publicada, e o cron de volta em `0 8 * * 1`. O motivo da falha na publicação não aparece pela API; falta a mensagem exibida na tela.
+- **Causa provável do horário [descoberta do Kiro]:** o export do repositório tem `settings.timezone = America/Sao_Paulo`, mas o workflow importado não tem. A execução 360 mostra o gatilho em `America/New_York` (UTC-4). Um cron para 16:20 dispararia às 17:20 em Brasília, e a segunda às 08:00 sairia às 09:00 em Brasília. A correção é manual: Settings do workflow, Timezone `America/Sao_Paulo`.
+- **Próximo teste:** com o fuso corrigido, cron para poucos minutos à frente, publicar e acompanhar a lista de execuções; só uma execução de modo `trigger` comprova o agendamento. **[pendente]**
+
+## Status final (29/10/2026, 15:21)
+
+**Comprovado**
+- WF01: um lead comercial com HMAC válido foi aceito e virou negócio no CRM (execução 355).
+- WF02: execução 356 vinculou um negócio existente e atualizou `sync_eventos`, sem duplicar o CRM.
+- WF03: cálculo reproduz a apuração histórica (23 de 23); 25 testes automatizados passam; e-mail de teste manual recebido.
+- `mesa_certa.original.db` intacto; registros dos testes documentados em `solucao/evidencias/05-testes-banco/`.
+
+**Limitações reais**
+- WF01 sem execução de: suporte ou não comercial, reenvio do mesmo `event_id`, assinatura inválida (401), falhas 429/500 e lote completo. As execuções 353 e 354 não tiveram causa comprovada.
+- WF02 sem execução do ramo de criação por POST, do tratamento de erro e de vários eventos.
+- WF03: **agendamento automático (segunda 08:00) não comprovado.** Está importado e foi executado à mão (357 e 359); a cópia importada não tem fuso definido (ver "Teste do agendamento").
+- **A cópia SQLite do CRM está desatualizada** (último registro em 11/10; o CRM mock já passou de 391 para 395 negócios). O resumo de 29/10 mostra 0 negócios na semana e só vale como teste de envio: **não deve ser lido como visão atual da operação**.
+- A classificação de pedidos (comercial, suporte, fornecedor, teste, lixo) é regra por texto, não validada por pessoas.
+
+
+**Pendências para a entrega**
+- Revisão de segurança do histórico do GitHub: histórico reescrito e publicado (ver README, seção 7). Falta a troca do segredo HMAC por quem o forneceu, já que o repositório é público e o valor ficou exposto; decisão da autora.
+- Comprovar o agendamento do WF03 e atualizar o `negocios_crm` antes de qualquer resumo real.
+- Observar o primeiro disparo automático dos hooks e o uso da skill em uma conversa nova.
+- Cenários sem execução listados em "Limitações reais".
