@@ -7,7 +7,9 @@ Valores de segredos não aparecem aqui.
 ## Uso de IA e de ações manuais
 
 - **Kiro** (assistente no editor): implementação de scripts e JSON, inspeção (workflows, banco e CRM por MCP somente leitura), testes, validações e documentação. Enviou os eventos de teste com `solucao/testar_webhook_hmac.py`, quando autorizado.
-- **ChatGPT**: apoio ao planejamento, ao entendimento técnico e à revisão de alternativas. 
+- **ChatGPT**: apoio ao planejamento, ao entendimento técnico e à revisão de alternativas.
+- **A solução em execução não usa IA:** os workflows e o `resumo_semanal.py` são determinísticos (regras e SQL). A IA entrou só no desenvolvimento, onde acelera código, consultas e documentação.
+- **Como a saída da IA foi conferida:** nada foi aceito só pelo log da ferramenta. Cada prova cruza fontes independentes (execução no n8n, SQLite e estado do CRM lidos à parte); os números do resumo foram comparados com a apuração histórica (23 de 23); há 25 testes automatizados; `mesa_certa.original.db` teve o SHA-256 conferido antes e depois. Quando a conferência discordou da IA, a decisão mudou: o tipo de nó SQLite foi trocado depois do teste, e uma leitura de "repositório privado" estava errada.
 - **Ações manuais, sem IA:** edições no editor do n8n, reinícios do n8n com variáveis de ambiente, importação do WF02 v2, clique em "Execute workflow" do WF02, ajuste de fuso e de cron do WF03, publicações e testes de agendamento, capturas de tela, tarja no e-mail, publicação no GitHub e a retirada de prints.
 - Legenda das sugestões: **[aceita]**, **[rejeitada]**, **[revisada após teste]**.
 

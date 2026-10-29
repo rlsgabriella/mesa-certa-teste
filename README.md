@@ -11,7 +11,7 @@ A Mesa Certa é uma empresa fictícia de software para restaurantes. A gestora c
 - **Três workflows no n8n** com SQLite e CRM mock: recebimento dos pedidos, conciliação com o CRM e resumo semanal por e-mail.
 - **Cálculo dos indicadores em Python**, com testes e validação contra a apuração histórica de 12/10/2026.
 - **Pacote do assistente de IA** (Kiro): instruções fixas, uma skill de auditoria e hooks de checagem de segredos ([`.kiro/`](.kiro/README.md)).
-- **Decisões e uso de IA** registrados em [`log-de-decisoes.md`](log-de-decisoes.md).
+- **Decisões e uso de IA** (onde, por quê e como a saída foi conferida) em [`log-de-decisoes.md`](log-de-decisoes.md).
 
 ## Fluxo da solução
 

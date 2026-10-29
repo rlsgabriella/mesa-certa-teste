@@ -16,7 +16,7 @@ Os resultados que dependem delas estão marcados como **estimativa** em [`respos
 | 7 | "Sem retorno" é o negócio em Novo, sem primeiro contato até a data de referência. Perdido fica fora. | É o que ela quer cobrar "hoje". |
 | 8 | Pedidos com o mesmo `event_id` são o mesmo pedido; assinatura inválida não conta como pedido. | O remetente reenvia até 4 vezes (documentação do webhook), e o lote traz 3 entregas com assinatura inválida. |
 | 9 | Os dados originais ficam intactos; os testes usam cópias e o CRM de teste. Os negócios criados nos testes de 28 e 29/10 não entram nos números históricos. | Permite repetir a análise do zero. |
-| 10 | Os valores de segredo e de token no material do desafio são de teste e não são credenciais reais. | Estão publicados no próprio material do desafio. |
+| 10 | Os valores de segredo e de token no material do desafio são de teste e não são credenciais reais. Como o repositório é público, tratei o segredo como exposto. | Estão no próprio material do desafio; a cautela vale porque um commit antigo os publicou. |
 | 11 | A cópia SQLite do CRM (`negocios_crm`) vale como o estado de 12/10 e não foi atualizada depois. | O banco do enunciado reflete esse momento; nenhum processo a atualiza. |
 | 12 | Não reclassificar os 104 pedidos antigos nem alterar o CRM sem autorização dela. | Evita mudar dados sem aval de quem é dona do processo. |
 
